@@ -5,4 +5,3 @@ The size and shape (physiognomy) of woody, dicotyledonous angiosperm leaves are 
 
 We used Digital Leaf Physiognomy (DiLP) to measure leaf characters of multiple *Vitis* species from two growing seasons with different temperatures and precipitation. The same vines were sampled each year in order to compare leaf shape on a vine-by-vine and leaf-by-leaf basis.
 
-Github, please talk to RStudio.
