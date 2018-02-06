@@ -11,6 +11,11 @@ We used Digital Leaf Physiognomy (DiLP) to measure leaf characters of multiple *
 
 ```{r}
 library(tidyverse)
+library(readxl)
+read_excel("R_DiLP_all_species.xlsx")
+read_excel("R_DiLP_Vitis_all_added.xlsx")
 ```
 
+# t-tests
 First, we tested whether there were significant differences between the two growing seasons for each of the ratios measured, as well as the total number of teeth. To do this, we ran a series of t-tests. 
+
