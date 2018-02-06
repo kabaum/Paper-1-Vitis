@@ -13,9 +13,26 @@ We used Digital Leaf Physiognomy (DiLP) to measure leaf characters of multiple *
 library(tidyverse)
 library(readxl)
 read_excel("R_DiLP_all_species.xlsx")
+excel_sheets("R_DiLP_all_species.xlsx")
 read_excel("R_DiLP_Vitis_all_added.xlsx")
+excel_sheets("R_DiLP_Vitis_all_added.xlsx")
 ```
 
 # t-tests
-First, we tested whether there were significant differences between the two growing seasons for each of the ratios measured, as well as the total number of teeth. To do this, we ran a series of t-tests. 
+First, we tested whether there were significant differences between the two growing seasons for each of the ratios measured, as well as the total number of teeth. To do this, we ran a series of t-tests.
+
+We first tested each of the variables for *Vitis acerifolia*.
+
+```{r}
+ac_all <- read_excel("R_DilP_Vitis_all_added.xlsx", sheet = "acerifolia.all.90")
+str(ac_all)
+ac_all$year <- as.factor(ac_all$year)
+ac_all$tooth.area <- as.numeric(ac_all$tooth.area)
+ac_all$tooth.area.perimeter <- as.numeric(ac_all$tooth.area.perimeter)
+ac_all$tooth.area.int.perimeter <- as.numeric(ac_all$tooth.area.int.perimeter)
+ac_all$average.tooth.area <- as.numeric(ac_all$average.tooth.area)
+t.test(ac_all$total.teeth~ac_all$year, var.equal = TRUE)
+t.test(ac_all$feret.diameter.ratio~ac_all$year, var.equal = TRUE)
+
+```
 
