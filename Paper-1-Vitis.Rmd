@@ -35,7 +35,6 @@ ac_all$average.tooth.area <- as.numeric(ac_all$average.tooth.area)
 ac_all$tooth.area.blade.area <- as.numeric(ac_all$tooth.area.blade.area)
 t.test(ac_all$total.teeth~ac_all$year, var.equal = TRUE)
 t.test(ac_all$feret.diameter.ratio~ac_all$year, var.equal = TRUE)
-t.test(ac_all$feret.diameter.ratio~ac_all$year, var.equal = TRUE)
 t.test(ac_all$tooth.area.perimeter~ac_all$year, var.equal = TRUE)
 t.test(ac_all$tooth.area.int.perimeter~ac_all$year, var.equal = TRUE)
 t.test(ac_all$average.tooth.area~ac_all$year, var.equal = TRUE)
@@ -48,4 +47,35 @@ t.test(ac_all$compactness~ac_all$year, var.equal = TRUE)
 t.test(ac_all$shape.factor~ac_all$year, var.equal = TRUE)
 t.test(ac_all$teeth.blade.area~ac_all$year, var.equal = TRUE)
 ```
-Only one variable showed a statistically significant different changes between growing seasons: tooth area to blade area (TABA).
+Only one variable showed a statistically significant changes between growing seasons: tooth area to blade area (TABA).
+
+We next tested each of the variables for *Vitis aestivalis*. 
+
+```{r}
+av_all <- read_excel("R_DilP_Vitis_all_added.xlsx", sheet = "aestivalis.all.90")
+av_all$year <- as.factor(av_all$year)
+av_all$petiole.width.area <- as.numeric(av_all$petiole.width.area)
+av_all$petiole.area <- as.numeric(av_all$petiole.area)
+av_all$major.feret <- as.numeric(av_all$major.feret)
+av_all$tooth.area <- as.numeric(av_all$tooth.area)
+av_all$feret.diameter.ratio <- as.numeric(av_all$feret.diameter.ratio)
+av_all$tooth.area.perimeter <- as.numeric(av_all$tooth.area.perimeter)
+av_all$tooth.area.int.perimeter <- as.numeric(av_all$tooth.area.int.perimeter)
+av_all$average.tooth.area <- as.numeric(av_all$average.tooth.area)
+av_all$tooth.area.blade.area <- as.numeric(av_all$tooth.area.blade.area)
+str(av_all)
+t.test(av_all$total.teeth~av_all$year, var.equal = TRUE)
+t.test(av_all$feret.diameter.ratio~av_all$year, var.equal = TRUE)
+t.test(av_all$tooth.area.perimeter~av_all$year, var.equal = TRUE)
+t.test(av_all$tooth.area.int.perimeter~av_all$year, var.equal = TRUE)
+t.test(av_all$average.tooth.area~av_all$year, var.equal = TRUE)
+t.test(av_all$tooth.area.blade.area~av_all$year, var.equal = TRUE)
+t.test(av_all$teeth.perimeter~av_all$year, var.equal = TRUE)
+t.test(av_all$teeth.int.perimeter~av_all$year, var.equal = TRUE)
+t.test(av_all$perimeter.area~av_all$year, var.equal = TRUE)
+t.test(av_all$perimeter.ratio~av_all$year, var.equal = TRUE)
+t.test(av_all$compactness~av_all$year, var.equal = TRUE)
+t.test(av_all$shape.factor~av_all$year, var.equal = TRUE)
+t.test(av_all$teeth.blade.area~av_all$year, var.equal = TRUE)
+```
+Four variables showed statistically significant changes between growing seasons: total teeth (TT), tooth area to blade area (TABA), compactness (CP), shape factor (SF).
