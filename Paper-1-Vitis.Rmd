@@ -11,6 +11,7 @@ We used Digital Leaf Physiognomy (DiLP) to measure leaf characters of multiple *
 
 ```{r}
 library(tidyverse)
+library(skimr)
 library(readxl)
 read_excel("R_DiLP_all_species.xlsx")
 excel_sheets("R_DiLP_all_species.xlsx")
@@ -31,8 +32,20 @@ ac_all$tooth.area <- as.numeric(ac_all$tooth.area)
 ac_all$tooth.area.perimeter <- as.numeric(ac_all$tooth.area.perimeter)
 ac_all$tooth.area.int.perimeter <- as.numeric(ac_all$tooth.area.int.perimeter)
 ac_all$average.tooth.area <- as.numeric(ac_all$average.tooth.area)
+ac_all$tooth.area.blade.area <- as.numeric(ac_all$tooth.area.blade.area)
 t.test(ac_all$total.teeth~ac_all$year, var.equal = TRUE)
 t.test(ac_all$feret.diameter.ratio~ac_all$year, var.equal = TRUE)
-
+t.test(ac_all$feret.diameter.ratio~ac_all$year, var.equal = TRUE)
+t.test(ac_all$tooth.area.perimeter~ac_all$year, var.equal = TRUE)
+t.test(ac_all$tooth.area.int.perimeter~ac_all$year, var.equal = TRUE)
+t.test(ac_all$average.tooth.area~ac_all$year, var.equal = TRUE)
+t.test(ac_all$tooth.area.blade.area~ac_all$year, var.equal = TRUE)
+t.test(ac_all$teeth.perimeter~ac_all$year, var.equal = TRUE)
+t.test(ac_all$teeth.int.perimeter~ac_all$year, var.equal = TRUE)
+t.test(ac_all$perimeter.area~ac_all$year, var.equal = TRUE)
+t.test(ac_all$perimeter.ratio~ac_all$year, var.equal = TRUE)
+t.test(ac_all$compactness~ac_all$year, var.equal = TRUE)
+t.test(ac_all$shape.factor~ac_all$year, var.equal = TRUE)
+t.test(ac_all$teeth.blade.area~ac_all$year, var.equal = TRUE)
 ```
-
+Only one variable showed a statistically significant different changes between growing seasons: tooth area to blade area (TABA).
