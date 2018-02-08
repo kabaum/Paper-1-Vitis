@@ -161,3 +161,29 @@ t.test(r_all$teeth.blade.area~r_all$year, var.equal = TRUE)
 ```
 
 Many variables showed statistically significant changes between growing seasons: tooth area to internal perimeter (TAIP), tooth area to blade area (TABA), total teeth to perimeter (TP), total teeth to internal perimeter (TIP), perimeter ratio (PR), compactness (CP), and shape factor (SF).
+
+# Principal Components Analysis (PCA)
+
+```{r}
+library(pcaMethods)
+excel_sheets("R_DiLP_Vitis_all_added.xlsx")
+```
+
+First, we applied a PCA to *Vitis acerifolia*.
+```{r}
+ac_ln <- read_excel("R_DiLP_Vitis_all_added.xlsx", sheet = "acerifolia.all.ln")
+ac_ln_mat <- data.matrix(ac_ln, rownames.force = NA)
+ac_ln_fixed <- ac_ln_mat[,-(1:3)]
+ac_ln_fixed[ac_ln_fixed == 0] <- NA
+pca_ac_all <- pca(ac_ln_fixed, method = "nipals", center = TRUE, nPcs = 5)
+summary(pca_ac_all)
+loadings(pca_ac_all)
+scores_pca_ac <- scores(pca_ac_all)
+scores_pca_ac_df <- as.data.frame(scores_pca_ac)
+str(scores_pca_ac_df)
+#ggplot(scores_pca_ac_df, aes(x = PC1, y = PC2, label = rownames(scores_pca_ac_df))) +
+  #geom_col(x = PC1, y = PC2) +
+  #ggtitle("PCA plot of Vitis acerifolia")
+#attach row names
+``` 
+
