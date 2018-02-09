@@ -176,14 +176,20 @@ ac_ln_mat <- data.matrix(ac_ln, rownames.force = NA)
 ac_ln_fixed <- ac_ln_mat[,-(1:3)]
 ac_ln_fixed[ac_ln_fixed == 0] <- NA
 pca_ac_all <- pca(ac_ln_fixed, method = "nipals", center = TRUE, nPcs = 5)
-summary(pca_ac_all)
-loadings(pca_ac_all)
-scores_pca_ac <- scores(pca_ac_all)
-scores_pca_ac_df <- as.data.frame(scores_pca_ac)
-str(scores_pca_ac_df)
-#ggplot(scores_pca_ac_df, aes(x = PC1, y = PC2, label = rownames(scores_pca_ac_df))) +
+bpca_ac_ll <- pca(ac_ln_fixed, method = "bpca", nPcs = 5)
+summary(bpca_ac_ll)
+loadings(bpca_ac_ll)
+#summary(pca_ac_all)
+#loadings(pca_ac_all)
+#print(pca_ac_all)
+#slplot(pca_ac_all)
+#loadings_pca_ac <- loadings(pca_ac_all)
+#loadings_pca_ac_df <- as.data.frame(loadings_pca_ac)
+#str(loadings_pca_ac_df)
+#ggplot(loadings_pca_ac_df, aes(x = PC1, y = PC2, label = rownames(loadings_pca_ac_df))) +
   #geom_col(x = PC1, y = PC2) +
   #ggtitle("PCA plot of Vitis acerifolia")
 #attach row names
+beep(sound = 3, expr = NULL)
 ``` 
 
