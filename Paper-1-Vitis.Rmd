@@ -11,6 +11,7 @@ We used Digital Leaf Physiognomy (DiLP) to measure leaf characters of multiple *
 
 ```{r}
 library(tidyverse)
+library(tidyr)
 library(skimr)
 library(readxl)
 read_excel("R_DiLP_all_species.xlsx")
@@ -191,6 +192,70 @@ print(bpca_ac_ll)
   #geom_col(x = PC1, y = PC2) +
   #ggtitle("PCA plot of Vitis acerifolia")
 #attach row names
-beep(sound = 3, expr = NULL)
 ``` 
+
+We then applied a PCA to *Vitis aestivalis*.
+
+```{r}
+av_ln <- read_excel("R_DiLP_Vitis_all_added.xlsx", sheet = "aestivalis.all.ln")
+av_ln_mat <- data.matrix(av_ln, rownames.force = NA)
+av_ln_fixed <- av_ln_mat[,-(1:3)]
+av_ln_fixed[av_ln_fixed == 0] <- NA
+#pca_av_all <- pca(av_ln_fixed, method = "nipals", center = TRUE, nPcs = 5)
+bpca_av_ll <- pca(av_ln_fixed, method = "bpca", nPcs = 5)
+summary(bpca_av_ll)
+loadings(bpca_av_ll)
+#summary(pca_av_all)
+#loadings(pca_av_all)
+print(bpca_av_ll)
+#print(pca_av_all)
+#slplot(pca_av_all)
+```
+
+We then applied a PCA to *Vitis amurensis*.
+
+```{r}
+am_ln <- read_excel("R_DiLP_Vitis_all_added.xlsx", sheet = "amurensis.all.ln")
+am_ln_mat <- data.matrix(am_ln, rownames.force = NA)
+am_ln_fixed <- am_ln_mat[,-(1:3)]
+am_ln_fixed[am_ln_fixed == 0] <- NA
+#pca_am_all <- pca(am_ln_fixed, method = "nipals", center = TRUE, nPcs = 5)
+bpca_am_ll <- pca(am_ln_fixed, method = "bpca", nPcs = 5)
+summary(bpca_am_ll)
+loadings(bpca_am_ll)
+#summary(pca_am_all)
+#loadings(pca_am_all)
+print(bpca_am_ll)
+#print(pca_am_all)
+#slplot(pca_am_all)
+```
+
+Finally, we applied a PCA to *Vitis riparia*.
+
+```{r}
+r_ln <- read_excel("R_DiLP_Vitis_all_added.xlsx", sheet = "riparia.all.ln")
+r_ln_mat <- data.matrix(r_ln, rownames.force = NA)
+r_ln_fixed <- r_ln_mat[,-(1:3)]
+r_ln_fixed[r_ln_fixed == 0] <- NA
+#pca_r_all <- pca(r_ln_fixed, method = "nipals", center = TRUE, nPcs = 5)
+bpca_r_ll <- pca(r_ln_fixed, method = "bpca", nPcs = 5)
+summary(bpca_r_ll)
+loadings(bpca_r_ll)
+#summary(pca_r_all)
+#loadings(pca_r_all)
+print(bpca_r_ll)
+#print(pca_r_all)
+#slplot(pca_r_all)
+beep(sound = 3, expr = NULL)
+```
+
+# Generalized Linear Modeling
+
+First, we tested *Vitis acerifolia*.
+
+```{r}
+ac_glm <- glm(leaf~total.teeth, data = ac_all, family = gaussian())
+summary(ac_glm)
+plot(ac_glm)
+```
 
