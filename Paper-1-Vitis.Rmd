@@ -246,16 +246,122 @@ loadings(bpca_r_ll)
 print(bpca_r_ll)
 #print(pca_r_all)
 #slplot(pca_r_all)
-beep(sound = 3, expr = NULL)
 ```
 
 # Generalized Linear Modeling
 
 First, we tested *Vitis acerifolia*.
 
+We ran a GLM for leaf number and total teeth.
+
 ```{r}
-ac_glm <- glm(leaf~total.teeth, data = ac_all, family = gaussian())
-summary(ac_glm)
-plot(ac_glm)
+skim(ac_all)
+ac_tt_glm <- glm(leaf~total.teeth, data = ac_all, family = gaussian())
+summary(ac_tt_glm)
+plot(ac_tt_glm)
+```
+
+We ran a GLM for leaf number and feret diameter ratio.
+
+```{r}
+ac_fdr_glm <- glm(leaf~feret.diameter.ratio, data = ac_all, family = gaussian())
+summary(ac_fdr_glm)
+plot(ac_fdr_glm)
+```
+
+We ran a GLM for leaf number and tooth area:perimeter. 
+
+```{r}
+ac_tap_glm <- glm(leaf~tooth.area.perimeter, data = ac_all, family = gaussian())
+summary(ac_tap_glm)
+plot(ac_tap_glm)
+```
+
+We ran a GLM for leaf number and tooth area:internal perimeter.
+
+```{r}
+ac_taip_glm <- glm(leaf~tooth.area.int.perimeter, data = ac_all, family = gaussian())
+summary(ac_taip_glm)
+plot(ac_taip_glm)
+```
+
+We ran a GLM for leaf number and average tooth area.
+
+```{r}
+ac_ata_glm <- glm(leaf~average.tooth.area, data = ac_all, family = gaussian())
+summary(ac_ata_glm)
+plot(ac_ata_glm)
+```
+
+We ran a GLM for leaf number and tooth area:blade area..
+
+```{r}
+ac_taba_glm <- glm(leaf~tooth.area.blade.area, data = ac_all, family = gaussian())
+summary(ac_taba_glm)
+plot(ac_taba_glm)
+```
+
+We ran a GLM for leaf number and teeth:perimeter.
+
+```{r}
+ac_tp_glm <- glm(leaf~teeth.perimeter, data = ac_all, family = gaussian())
+summary(ac_tp_glm)
+plot(ac_tp_glm)
+```
+
+We ran a GLM for leaf number and teeth:internal perimeter.
+
+```{r}
+ac_tip_glm <- glm(leaf~teeth.int.perimeter, data = ac_all, family = gaussian())
+summary(ac_tip_glm)
+plot(ac_tip_glm)
+```
+
+We ran a GLM for leaf number and perimeter:area.
+
+```{r}
+ac_pa_glm <- glm(leaf~perimeter.area, data = ac_all, family = gaussian())
+summary(ac_pa_glm)
+plot(ac_pa_glm)
+```
+
+We ran a GLM for leaf number and perimeter ratio.
+
+```{r}
+ac_pr_glm <- glm(leaf~perimeter.ratio, data = ac_all, family = gaussian())
+summary(ac_pr_glm)
+plot(ac_pr_glm)
+```
+
+We ran a GLM for leaf number and compactness.
+
+```{r}
+ac_cp_glm <- glm(leaf~compactness, data = ac_all, family = gaussian())
+summary(ac_cp_glm)
+plot(ac_cp_glm)
+```
+
+We ran a GLM for leaf number and shape factor.
+
+```{r}
+ac_sf_glm <- glm(leaf~shape.factor, data = ac_all, family = gaussian())
+summary(ac_sf_glm)
+plot(ac_sf_glm)
+```
+
+We ran a GLM for leaf number and teeth:blade area.
+
+```{r}
+ac_tba_glm <- glm(leaf~teeth.blade.area, data = ac_all, family = gaussian())
+summary(ac_tba_glm)
+plot(ac_tba_glm)
+beep(sound = 3, expr = NULL)
+```
+
+We ran a GLM for leaf number and multiple variables. 
+```{r}
+ac_clim_glm <- glm(leaf~feret.diameter.ratio + tooth.area.blade.area + teeth.blade.area + teeth.int.perimeter, data = ac_all, family = gaussian())
+summary(ac_clim_glm)
+plot(ac_clim_glm)
 ```
 
