@@ -355,7 +355,6 @@ We ran a GLM for leaf number and teeth:blade area.
 ac_tba_glm <- glm(leaf~teeth.blade.area, data = ac_all, family = gaussian())
 summary(ac_tba_glm)
 plot(ac_tba_glm)
-beep(sound = 3, expr = NULL)
 ```
 
 We ran a GLM for leaf number and multiple variables. 
@@ -363,5 +362,6 @@ We ran a GLM for leaf number and multiple variables.
 ac_clim_glm <- glm(leaf~feret.diameter.ratio + tooth.area.blade.area + teeth.blade.area + teeth.int.perimeter, data = ac_all, family = gaussian())
 summary(ac_clim_glm)
 plot(ac_clim_glm)
+beep(sound = 3, expr = NULL)
 ```
 
