@@ -24,26 +24,64 @@ First, we tested *Vitis acerifolia*.
 
 We ran a LM for leaf number and total teeth.
 ```{r}
-acerifolia <-filter(R_DiLP_all_species, species == "acerifolia")
+acerifolia <-filter(Vitis_90_ratios, species == "acerifolia")
 skim(acerifolia, total.teeth)
-ac_tt_plot <- ggplot(acerifolia, aes(x = leaf, y = total.teeth)) + geom_smooth() + theme_classic()
+ac_tt_plot <- ggplot(acerifolia, aes(x = leaf, y = total.teeth)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
 ac_tt_plot <- ac_tt_plot +labs(x = "Leaf number",
                                y = "Total teeth")
 ac_tt_plot
 
 ```
+We need the means for each leaf character for both years combined.
+```{r}
+ac_l_means <-  acerifolia %>% 
+  group_by(leaf) %>% 
+  summarize(avg.tt = mean(total.teeth),
+            avg.fdr = mean(feret.diameter.ratio),
+            avg.tap = mean(tooth.area.perimeter, na.rm = TRUE),
+            avg.taip = mean(tooth.area.int.perimeter, na.rm = TRUE),
+            avg.ta = mean(average.tooth.area, na.rm = TRUE),
+            avg.taba = mean(tooth.area.blade.area, na.rm = TRUE),
+            avg.tp = mean(teeth.perimeter),
+            avg.tip = mean(teeth.int.perimeter),
+            avg.pa = mean(perimeter.area),
+            avg.pr = mean(perimeter.ratio),
+            avg.cp = mean(compactness),
+            avg.sf = mean(shape.factor),
+            avg.tba = mean(teeth.blade.area))
+```
 
 ```{r}
-ac_tt_lm <- lm(total.teeth ~ leaf, data = acerifolia)
+ac_tt_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.tt)) + geom_line() + theme_classic()
+ac_tt_mean_plot <- ac_tt_mean_plot +labs(x = "Leaf number",
+                               y = "Total teeth")
+ac_tt_mean_plot
+```
+
+
+```{r}
+ac_tt_lm <- lm(avg.tt ~ leaf, data = ac_l_means)
 summary(ac_tt_lm)
 ```
 
 ```{r}
 ac_tt_seg <- segmented(ac_tt_lm,
                        seg.Z = ~ leaf,
-                       psi = NA)
+                       psi = list(leaf = c(2, 7)))
 summary(ac_tt_seg)
 ```
+
+```{r}
+ac_tt_seg$psi
+slope(ac_tt_seg)
+ac_tt_fitted <- fitted(ac_tt_seg)
+ac_tt_model <- data.frame(Leaf = ac_l_means$leaf, Teeth = ac_tt_fitted)
+ggplot(ac_tt_model, aes(x = Leaf, y = Teeth)) + geom_line()
+ac_tt_lines <- ac_tt_seg$psi[, 2]
+ac_tt_mean_break <- ac_tt_plot + geom_vline(xintercept = ac_tt_lines, linetype = "dashed")
+ac_tt_mean_break
+```
+
 
 First, we tested *Vitis aestivalis*.
 
