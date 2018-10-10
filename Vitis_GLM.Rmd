@@ -1,0 +1,67 @@
+---
+title: "Paper 1 GLM"
+output: html_notebook
+---
+
+# Intro
+
+The size and shape (physiognomy) of woody, dicotyledonous angiosperm leaves are correlated to climate.  These relationships have been used to develop paleoclimate proxies. Many plant communities, particularly in Northern Hemisphere temperate regions, have an inverse correlation between temperature and the degree of leaf dissection and the presence of teeth, as well as tooth size and abundance. One of the underlying assumptions of leaf physiognomic-paleoclimate proxies is that leaf traits can plastically respond to climate such that that leaves reliably track changes in temperature and precipitation.  Additionally, it is also assumed that leaf traits allometrically scale as a leaf matures through the growing season, such that juvenile and mature leaves have similar leaf traits. However, little work has been done to determine how quickly leaves plastically respond to changes in climate or whether all leaves on a plant respond in the same way. 
+
+We used Digital Leaf Physiognomy (DiLP) to measure leaf characters of multiple *Vitis* species from two growing seasons with different temperatures and precipitation. The same vines were sampled each year in order to compare leaf shape on a vine-by-vine and leaf-by-leaf basis. 
+
+
+```{r setup}
+library(readxl)
+library(dplyr)
+library(skimr)
+library(ggplot2)
+library(segmented)
+```
+
+# Linear Modeling
+
+First, we tested *Vitis acerifolia*.
+
+We ran a LM for leaf number and total teeth.
+```{r}
+acerifolia <-filter(R_DiLP_all_species, species == "acerifolia")
+skim(acerifolia, total.teeth)
+ac_tt_plot <- ggplot(acerifolia, aes(x = leaf, y = total.teeth)) + geom_smooth() + theme_classic()
+ac_tt_plot <- ac_tt_plot +labs(x = "Leaf number",
+                               y = "Total teeth")
+ac_tt_plot
+
+```
+
+```{r}
+ac_tt_lm <- lm(total.teeth ~ leaf, data = acerifolia)
+summary(ac_tt_lm)
+```
+
+```{r}
+ac_tt_seg <- segmented(ac_tt_lm,
+                       seg.Z = ~ leaf,
+                       psi = NA)
+summary(ac_tt_seg)
+```
+
+First, we tested *Vitis aestivalis*.
+
+We ran a GLM for leaf number and total teeth.
+```{r}
+aestivalis <-filter(R_DiLP_all_species, species == "aestivalis")
+```
+
+First, we tested *Vitis amurensis*.
+
+We ran a GLM for leaf number and total teeth.
+```{r}
+amurensis <-filter(R_DiLP_all_species, species == "amurensis")
+```
+
+First, we tested *Vitis riparia*.
+
+We ran a GLM for leaf number and total teeth.
+```{r}
+riparia <-filter(R_DiLP_all_species, species == "riparia")
+```
