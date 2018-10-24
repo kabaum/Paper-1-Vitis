@@ -708,7 +708,7 @@ av_tt13_mean <-  aestivalis %>%
   group_by(leaf) %>% 
   summarize(avg.tt = mean(total.teeth, na.rm = TRUE))
 
-ac_tt15_mean <- aestivalis %>% 
+av_tt15_mean <- aestivalis %>% 
   filter(year == 2015) %>% 
   group_by(leaf) %>% 
   summarize(avg.tt = mean(total.teeth, na.rm = TRUE))
@@ -721,7 +721,7 @@ av_taba13_mean <-  aestivalis %>%
   group_by(leaf) %>% 
   summarize(avg.taba = mean(tooth.area.blade.area, na.rm = TRUE))
 
-ac_taba15_mean <- aestivalis %>% 
+av_taba15_mean <- aestivalis %>% 
   filter(year == 2015) %>% 
   group_by(leaf) %>% 
   summarize(avg.taba = mean(tooth.area.blade.area, na.rm = TRUE))
@@ -734,7 +734,7 @@ av_cp13_mean <-  aestivalis %>%
   group_by(leaf) %>% 
   summarize(avg.cp = mean(compactness, na.rm = TRUE))
 
-ac_cp15_mean <- aestivalis %>% 
+av_cp15_mean <- aestivalis %>% 
   filter(year == 2015) %>% 
   group_by(leaf) %>% 
   summarize(avg.cp = mean(compactness, na.rm = TRUE))
@@ -747,7 +747,7 @@ av_sf13_mean <-  aestivalis %>%
   group_by(leaf) %>% 
   summarize(avg.sf = mean(shape.factor, na.rm = TRUE))
 
-ac_sf15_mean <- aestivalis %>% 
+av_sf15_mean <- aestivalis %>% 
   filter(year == 2015) %>% 
   group_by(leaf) %>% 
   summarize(avg.sf = mean(shape.factor, na.rm = TRUE))
@@ -1119,14 +1119,341 @@ av_tba_mean_break
 ggsave("av_tba_break.png")
 ```
 
-First, we tested *Vitis amurensis*.
+We tested leaf number and tooth area:blade area for 2013.
+```{r}
+av_taba13_plot <- ggplot(av_13, aes(x = leaf, y = teeth.blade.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+av_taba13_plot <- av_taba13_plot +labs(x = "Leaf number",
+                               y = "Tooth Area:Blade Area")
+av_taba13_plot
+
+```
+
+```{r}
+av_taba13_mean_plot <- ggplot(av_taba13_mean, aes(x = leaf, y = avg.taba)) + geom_line() + theme_classic()
+av_taba13_mean_plot <- av_taba13_mean_plot +labs(x = "Leaf number",
+                               y = "Tooth Area:Blade Area")
+av_taba13_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:blade area in 2013.
+```{r}
+av_taba13_lm <- lm(avg.taba ~ leaf, data = av_taba13_mean)
+summary(av_taba13_lm)
+```
+
+```{r}
+av_taba13_seg <- segmented(av_taba13_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(av_taba13_seg)
+```
+
+```{r}
+av_taba13_seg$psi
+slope(av_taba13_seg)
+av_taba13_fitted <- fitted(av_taba13_seg)
+av_taba13_model <- data.frame(Leaf = av_taba13_mean$leaf, TABA = av_taba13_fitted)
+ggplot(av_taba13_model, aes(x = Leaf, y = TABA)) + geom_line()
+av_taba13_lines <- av_taba13_seg$psi[, 2]
+av_taba13_mean_break <- av_taba13_plot + geom_vline(xintercept = av_taba13_lines, linetype = "dashed")
+av_taba13_mean_break
+ggsave("av_taba13_break.png")
+```
+
+We tested leaf number and tooth area:blade area for 2015.
+```{r}
+av_taba15_plot <- ggplot(av_15, aes(x = leaf, y = teeth.blade.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+av_taba15_plot <- av_taba15_plot +labs(x = "Leaf number",
+                               y = "Tooth Area:Blade Area")
+av_taba15_plot
+
+```
+
+```{r}
+av_taba15_mean_plot <- ggplot(av_taba15_mean, aes(x = leaf, y = avg.taba)) + geom_line() + theme_classic()
+av_taba15_mean_plot <- av_taba15_mean_plot +labs(x = "Leaf number",
+                               y = "Tooth Area:Blade Area")
+av_taba15_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:blade area in 2015.
+```{r}
+av_taba15_lm <- lm(avg.taba ~ leaf, data = av_taba15_mean)
+summary(av_taba15_lm)
+```
+
+```{r}
+av_taba15_seg <- segmented(av_taba15_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(2, 7, 10)))
+summary(av_taba15_seg)
+```
+
+```{r}
+av_taba15_seg$psi
+slope(av_taba15_seg)
+av_taba15_fitted <- fitted(av_taba15_seg)
+av_taba15_model <- data.frame(Leaf = av_taba15_mean$leaf, TABA = av_taba15_fitted)
+ggplot(av_taba15_model, aes(x = Leaf, y = TABA)) + geom_line()
+av_taba15_lines <- av_taba15_seg$psi[, 2]
+av_taba15_mean_break <- av_taba15_plot + geom_vline(xintercept = av_taba15_lines, linetype = "dashed")
+av_taba15_mean_break
+ggsave("av_taba15_break.png")
+```
+
+We tested leaf number and tooth teeth for 2013.
+```{r}
+av_tt13_plot <- ggplot(av_13, aes(x = leaf, y = total.teeth)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+av_tt13_plot <- av_tt13_plot +labs(x = "Leaf number",
+                               y = "Total Teeth")
+av_tt13_plot
+
+```
+
+```{r}
+av_tt13_mean_plot <- ggplot(av_tt13_mean, aes(x = leaf, y = avg.tt)) + geom_line() + theme_classic()
+av_tt13_mean_plot <- av_tt13_mean_plot +labs(x = "Leaf number",
+                               y = "Total Teeth")
+av_tt13_mean_plot
+```
+
+We ran a LM for leaf number and total teeth in 2013.
+```{r}
+av_tt13_lm <- lm(avg.tt ~ leaf, data = av_tt13_mean)
+summary(av_tt13_lm)
+```
+
+```{r}
+av_tt13_seg <- segmented(av_tt13_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(av_tt13_seg)
+```
+
+```{r}
+av_tt13_seg$psi
+slope(av_tt13_seg)
+av_tt13_fitted <- fitted(av_tt13_seg)
+av_tt13_model <- data.frame(Leaf = av_tt13_mean$leaf, TT = av_tt13_fitted)
+ggplot(av_tt13_model, aes(x = Leaf, y = TT)) + geom_line()
+av_tt13_lines <- av_tt13_seg$psi[, 2]
+av_tt13_mean_break <- av_tt13_plot + geom_vline(xintercept = av_tt13_lines, linetype = "dashed")
+av_tt13_mean_break
+ggsave("av_tt13_break.png")
+```
+
+We tested leaf number and total teeth for 2015.
+```{r}
+av_tt15_plot <- ggplot(av_15, aes(x = leaf, y = total.teeth)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+av_tt15_plot <- av_tt15_plot +labs(x = "Leaf number",
+                               y = "Total Teeth")
+av_tt15_plot
+
+```
+
+```{r}
+av_tt15_mean_plot <- ggplot(av_tt15_mean, aes(x = leaf, y = avg.tt)) + geom_line() + theme_classic()
+av_tt15_mean_plot <- av_tt15_mean_plot +labs(x = "Leaf number",
+                               y = "Total teeth")
+av_tt15_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:blade area in 2015.
+```{r}
+av_tt15_lm <- lm(avg.tt ~ leaf, data = av_tt15_mean)
+summary(av_tt15_lm)
+```
+
+```{r}
+av_tt15_seg <- segmented(av_tt15_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(av_tt15_seg)
+```
+
+```{r}
+av_tt15_seg$psi
+slope(av_tt15_seg)
+av_tt15_fitted <- fitted(av_tt15_seg)
+av_tt15_model <- data.frame(Leaf = av_tt15_mean$leaf, TT = av_tt15_fitted)
+ggplot(av_tt15_model, aes(x = Leaf, y = TT)) + geom_line()
+av_tt15_lines <- av_tt15_seg$psi[, 2]
+av_tt15_mean_break <- av_tt15_plot + geom_vline(xintercept = av_tt15_lines, linetype = "dashed")
+av_tt15_mean_break
+ggsave("av_tt15_break.png")
+```
+
+We tested leaf number and compactness for 2013.
+```{r}
+av_cp13_plot <- ggplot(av_13, aes(x = leaf, y = compactness)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+av_cp13_plot <- av_cp13_plot +labs(x = "Leaf number",
+                               y = "Compactness")
+av_cp13_plot
+
+```
+
+```{r}
+av_cp13_mean_plot <- ggplot(av_cp13_mean, aes(x = leaf, y = avg.cp)) + geom_line() + theme_classic()
+av_cp13_mean_plot <- av_cp13_mean_plot +labs(x = "Leaf number",
+                               y = "Compactness")
+av_cp13_mean_plot
+```
+
+We ran a LM for leaf number and compactness in 2013.
+```{r}
+av_cp13_lm <- lm(avg.cp ~ leaf, data = av_cp13_mean)
+summary(av_cp13_lm)
+```
+
+```{r}
+av_cp13_seg <- segmented(av_cp13_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(av_cp13_seg)
+```
+
+```{r}
+av_cp13_seg$psi
+slope(av_cp13_seg)
+av_cp13_fitted <- fitted(av_cp13_seg)
+av_cp13_model <- data.frame(Leaf = av_cp13_mean$leaf, CP = av_cp13_fitted)
+ggplot(av_cp13_model, aes(x = Leaf, y = CP)) + geom_line()
+av_cp13_lines <- av_cp13_seg$psi[, 2]
+av_cp13_mean_break <- av_cp13_plot + geom_vline(xintercept = av_cp13_lines, linetype = "dashed")
+av_cp13_mean_break
+ggsave("av_cp13_break.png")
+```
+
+We tested leaf number and compactness for 2015.
+```{r}
+av_cp15_plot <- ggplot(av_15, aes(x = leaf, y = compactness)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+av_cp15_plot <- av_cp15_plot +labs(x = "Leaf number",
+                               y = "Compactness")
+av_cp15_plot
+```
+
+```{r}
+av_cp15_mean_plot <- ggplot(av_cp15_mean, aes(x = leaf, y = avg.cp)) + geom_line() + theme_classic()
+av_cp15_mean_plot <- av_cp15_mean_plot +labs(x = "Leaf number",
+                               y = "Compactness")
+av_cp15_mean_plot
+```
+
+We ran a LM for leaf number and compactness in 2015.
+```{r}
+av_cp15_lm <- lm(avg.cp ~ leaf, data = av_cp15_mean)
+summary(av_cp15_lm)
+```
+
+```{r}
+av_cp15_seg <- segmented(av_cp15_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(av_cp15_seg)
+```
+
+```{r}
+av_cp15_seg$psi
+slope(av_cp15_seg)
+av_cp15_fitted <- fitted(av_cp15_seg)
+av_cp15_model <- data.frame(Leaf = av_cp15_mean$leaf, CP = av_cp15_fitted)
+ggplot(av_cp15_model, aes(x = Leaf, y = CP)) + geom_line()
+av_cp15_lines <- av_cp15_seg$psi[, 2]
+av_cp15_mean_break <- av_cp15_plot + geom_vline(xintercept = av_cp15_lines, linetype = "dashed")
+av_cp15_mean_break
+ggsave("av_cp15_break.png")
+```
+
+We tested leaf number and shape factor for 2013.
+```{r}
+av_sf13_plot <- ggplot(av_13, aes(x = leaf, y = shape.factor)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+av_sf13_plot <- av_sf13_plot +labs(x = "Leaf number",
+                               y = "Shape factor")
+av_sf13_plot
+```
+
+```{r}
+av_sf13_mean_plot <- ggplot(av_sf13_mean, aes(x = leaf, y = avg.sf)) + geom_line() + theme_classic()
+av_sf13_mean_plot <- av_sf13_mean_plot +labs(x = "Leaf number",
+                               y = "Shape factor")
+av_sf13_mean_plot
+```
+
+We ran a LM for leaf number and shape factor in 2013.
+```{r}
+av_sf13_lm <- lm(avg.sf ~ leaf, data = av_sf13_mean)
+summary(av_sf13_lm)
+```
+
+```{r}
+av_sf13_seg <- segmented(av_sf13_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(av_sf13_seg)
+```
+
+```{r}
+av_sf13_seg$psi
+slope(av_sf13_seg)
+av_sf13_fitted <- fitted(av_sf13_seg)
+av_sf13_model <- data.frame(Leaf = av_sf13_mean$leaf, SF = av_sf13_fitted)
+ggplot(av_sf13_model, aes(x = Leaf, y = SF)) + geom_line()
+av_sf13_lines <- av_sf13_seg$psi[, 2]
+av_sf13_mean_break <- av_sf13_plot + geom_vline(xintercept = av_sf13_lines, linetype = "dashed")
+av_sf13_mean_break
+ggsave("av_sf13_break.png")
+```
+
+We tested leaf number and shape factor for 2015.
+```{r}
+av_sf15_plot <- ggplot(av_15, aes(x = leaf, y = shape.factor)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+av_sf15_plot <- av_sf15_plot +labs(x = "Leaf number",
+                               y = "Shape factor")
+av_sf15_plot
+
+```
+
+```{r}
+av_sf15_mean_plot <- ggplot(av_sf15_mean, aes(x = leaf, y = avg.sf)) + geom_line() + theme_classic()
+av_sf15_mean_plot <- av_sf15_mean_plot +labs(x = "Leaf number",
+                               y = "Shape factor")
+av_sf15_mean_plot
+```
+
+We ran a LM for leaf number and shape factor in 2015.
+```{r}
+av_sf15_lm <- lm(avg.sf ~ leaf, data = av_sf15_mean)
+summary(av_sf15_lm)
+```
+
+```{r}
+av_sf15_seg <- segmented(av_sf15_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(5, 8, 11)))
+summary(av_sf15_seg)
+```
+
+```{r}
+av_sf15_seg$psi
+slope(av_sf15_seg)
+av_sf15_fitted <- fitted(av_sf15_seg)
+av_sf15_model <- data.frame(Leaf = av_sf15_mean$leaf, SF = av_sf15_fitted)
+ggplot(av_sf15_model, aes(x = Leaf, y = SF)) + geom_line()
+av_sf15_lines <- av_sf15_seg$psi[, 2]
+av_sf15_mean_break <- av_sf15_plot + geom_vline(xintercept = av_sf15_lines, linetype = "dashed")
+av_sf15_mean_break
+ggsave("av_sf15_break.png")
+```
+
+
+Next we tested *Vitis amurensis*.
 
 We ran a GLM for leaf number and total teeth.
 ```{r}
 amurensis <-filter(R_DiLP_all_species, species == "amurensis")
 ```
 
-First, we tested *Vitis riparia*.
+Finally we tested *Vitis riparia*.
 
 We ran a GLM for leaf number and total teeth.
 ```{r}
