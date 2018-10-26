@@ -1448,14 +1448,50 @@ ggsave("av_sf15_break.png")
 
 Next we tested *Vitis amurensis*.
 
-We ran a GLM for leaf number and total teeth.
+We need the means for each leaf character for both years combined.
 ```{r}
-amurensis <-filter(R_DiLP_all_species, species == "amurensis")
+amurensis <-filter(Vitis_90_ratios, species == "amurensis")
+am_l_means <-  amurensis %>% 
+  group_by(leaf) %>% 
+  summarize(avg.tt = mean(total.teeth),
+            avg.fdr = mean(feret.diameter.ratio),
+            avg.tap = mean(tooth.area.perimeter, na.rm = TRUE),
+            avg.taip = mean(tooth.area.int.perimeter, na.rm = TRUE),
+            avg.ta = mean(average.tooth.area, na.rm = TRUE),
+            avg.taba = mean(tooth.area.blade.area, na.rm = TRUE),
+            avg.tp = mean(teeth.perimeter),
+            avg.tip = mean(teeth.int.perimeter),
+            avg.pa = mean(perimeter.area),
+            avg.pr = mean(perimeter.ratio),
+            avg.cp = mean(compactness),
+            avg.sf = mean(shape.factor),
+            avg.tba = mean(teeth.blade.area))
 ```
+
+Many variables showed statistically significant changes between growing seasons: total teeth (TT), tooth area to perimeter (TAP), tooth area to internal perimeter (TAIP), average tooth area (ATA), *total teeth to perimeter (TP)*, *perimeter to area (PA)*, perimeter to ratio (PR), *compactness (CP)*, and shape factor (SF), so we need to split these variables for each year.
+
 
 Finally we tested *Vitis riparia*.
 
-We ran a GLM for leaf number and total teeth.
+We need the means for each leaf character for both years combined.
 ```{r}
-riparia <-filter(R_DiLP_all_species, species == "riparia")
+riparia <-filter(Vitis_90_ratios, species == "riparia")
+r_l_means <-  riparia %>% 
+  group_by(leaf) %>% 
+  summarize(avg.tt = mean(total.teeth),
+            avg.fdr = mean(feret.diameter.ratio),
+            avg.tap = mean(tooth.area.perimeter, na.rm = TRUE),
+            avg.taip = mean(tooth.area.int.perimeter, na.rm = TRUE),
+            avg.ta = mean(average.tooth.area, na.rm = TRUE),
+            avg.taba = mean(tooth.area.blade.area, na.rm = TRUE),
+            avg.tp = mean(teeth.perimeter),
+            avg.tip = mean(teeth.int.perimeter),
+            avg.pa = mean(perimeter.area),
+            avg.pr = mean(perimeter.ratio),
+            avg.cp = mean(compactness),
+            avg.sf = mean(shape.factor),
+            avg.tba = mean(teeth.blade.area))
 ```
+
+Many variables showed statistically significant changes between growing seasons: tooth area to internal perimeter (TAIP), tooth area to blade area (TABA), total teeth to perimeter (TP), total teeth to internal perimeter (TIP), perimeter ratio (PR), compactness (CP), and shape factor (SF), so we need to split these variables for each year.
+
