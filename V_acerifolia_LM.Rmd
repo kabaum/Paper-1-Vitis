@@ -1,0 +1,670 @@
+---
+title: "Vitis acerifolia LM"
+output: html_notebook
+---
+
+# Intro
+
+The size and shape (physiognomy) of woody, dicotyledonous angiosperm leaves are correlated to climate.  These relationships have been used to develop paleoclimate proxies. Many plant communities, particularly in Northern Hemisphere temperate regions, have an inverse correlation between temperature and the degree of leaf dissection and the presence of teeth, as well as tooth size and abundance. One of the underlying assumptions of leaf physiognomic-paleoclimate proxies is that leaf traits can plastically respond to climate such that that leaves reliably track changes in temperature and precipitation.  Additionally, it is also assumed that leaf traits allometrically scale as a leaf matures through the growing season, such that juvenile and mature leaves have similar leaf traits. However, little work has been done to determine how quickly leaves plastically respond to changes in climate or whether all leaves on a plant respond in the same way. 
+
+We used Digital Leaf Physiognomy (DiLP) to measure leaf characters of multiple *Vitis* species from two growing seasons with different temperatures and precipitation. The same vines were sampled each year in order to compare leaf shape on a vine-by-vine and leaf-by-leaf basis. 
+
+
+```{r setup}
+library(readxl)
+library(dplyr)
+library(skimr)
+library(ggplot2)
+library(gganimate)
+library(segmented)
+Vitis_90_ratios <- read_excel("R_DiLP_all_species.xlsx", 
+     sheet = "all.90", col_types = c("text", 
+         "numeric", "numeric", "numeric", 
+         "skip", "skip", "skip", "skip", 
+         "skip", "skip", "skip", "skip", 
+         "skip", "skip", "skip", "numeric", 
+         "skip", "numeric", "numeric", "numeric", 
+         "numeric", "numeric", "numeric", 
+         "numeric", "numeric", "numeric", 
+         "numeric", "numeric", "numeric"))
+```
+
+# t-tests
+First, we tested whether there were significant differences between the two growing seasons for each of the ratios measured, as well as the total number of teeth. To do this, we ran a series of t-tests.
+
+We first tested each of the variables for *Vitis acerifolia*. Only one variable showed a statistically significant changes between growing seasons: tooth area to blade area (TABA).
+
+We next tested each of the variables for *Vitis aestivalis*. Four variables showed statistically significant changes between growing seasons: total teeth (TT), tooth area to blade area (TABA), compactness (CP), shape factor (SF).
+
+We next tested each of the variables for *Vitis amurensis*. Many variables showed statistically significant changes between growing seasons: total teeth (TT), tooth area to perimeter (TAP), tooth area to internal perimeter (TAIP), average tooth area (ATA), *total teeth to perimeter (TP)*, *perimeter to area (PA)*, perimeter to ratio (PR), *compactness (CP)*, and shape factor (SF). 
+
+We finally tested each of the variables for *Vitis riparia*. Many variables showed statistically significant changes between growing seasons: tooth area to internal perimeter (TAIP), tooth area to blade area (TABA), total teeth to perimeter (TP), total teeth to internal perimeter (TIP), perimeter ratio (PR), compactness (CP), and shape factor (SF).
+
+# Linear Modeling
+
+First, we tested *Vitis acerifolia*.
+
+We need the means for each leaf character for both years combined.
+```{r}
+acerifolia <-filter(Vitis_90_ratios, species == "acerifolia")
+ac_l_means <-  acerifolia %>% 
+  group_by(leaf) %>% 
+  summarize(avg.tt = mean(total.teeth),
+            avg.fdr = mean(feret.diameter.ratio),
+            avg.tap = mean(tooth.area.perimeter, na.rm = TRUE),
+            avg.taip = mean(tooth.area.int.perimeter, na.rm = TRUE),
+            avg.ta = mean(average.tooth.area, na.rm = TRUE),
+            avg.taba = mean(tooth.area.blade.area, na.rm = TRUE),
+            avg.tp = mean(teeth.perimeter),
+            avg.tip = mean(teeth.int.perimeter),
+            avg.pa = mean(perimeter.area),
+            avg.pr = mean(perimeter.ratio),
+            avg.cp = mean(compactness),
+            avg.sf = mean(shape.factor),
+            avg.tba = mean(teeth.blade.area))
+```
+
+However we need to split tooth area:blade area for each year.
+```{r}
+ac_13 <- filter(acerifolia, year == 2013)
+ac_15 <- filter(acerifolia, year == 2015)
+```
+
+```{r}
+ac_taba13_mean <-  acerifolia %>% 
+  filter(year == 2013) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.taba = mean(tooth.area.blade.area, na.rm = TRUE))
+
+ac_taba15_mean <- acerifolia %>% 
+  filter(year == 2015) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.taba = mean(tooth.area.blade.area, na.rm = TRUE))
+```
+
+We tested leaf number and total teeth.
+```{r}
+skim(acerifolia, total.teeth)
+ac_tt_plot <- ggplot(acerifolia, aes(x = leaf, y = total.teeth)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_tt_plot <- ac_tt_plot +labs(x = "Leaf number",
+                               y = "Total teeth")
+ac_tt_plot
+
+```
+
+```{r}
+ac_tt_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.tt)) + geom_line() + theme_classic()
+ac_tt_mean_plot <- ac_tt_mean_plot +labs(x = "Leaf number",
+                               y = "Total teeth")
+ac_tt_mean_plot
+```
+
+We ran a LM for leaf number and total teeth.
+```{r}
+ac_tt_lm <- lm(avg.tt ~ leaf, data = ac_l_means)
+summary(ac_tt_lm)
+```
+
+```{r}
+ac_tt_seg <- segmented(ac_tt_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_tt_seg)
+```
+
+```{r}
+ac_tt_seg$psi
+slope(ac_tt_seg)
+ac_tt_fitted <- fitted(ac_tt_seg)
+ac_tt_model <- data.frame(Leaf = ac_l_means$leaf, Teeth = ac_tt_fitted)
+ggplot(ac_tt_model, aes(x = Leaf, y = Teeth)) + geom_line()
+ac_tt_lines <- ac_tt_seg$psi[, 2]
+ac_tt_mean_break <- ac_tt_plot + geom_vline(xintercept = ac_tt_lines, linetype = "dashed")
+ac_tt_mean_break
+ggsave("ac_tt_break.png")
+```
+
+We wanted to test leaf number and feret diameter ratio.
+```{r}
+skim(acerifolia, total.teeth)
+ac_fdr_plot <- ggplot(acerifolia, aes(x = leaf, y = feret.diameter.ratio)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_fdr_plot <- ac_fdr_plot +labs(x = "Leaf number",
+                               y = "Feret Diameter Ratio")
+ac_fdr_plot
+
+```
+
+
+```{r}
+ac_fdr_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.fdr)) + geom_line() + theme_classic()
+ac_fdr_mean_plot <- ac_fdr_mean_plot +labs(x = "Leaf number",
+                               y = "Feret Diameter Ratio")
+ac_fdr_mean_plot
+```
+
+We ran a LM for leaf number and feret diamter ratio.
+```{r}
+ac_fdr_lm <- lm(avg.fdr ~ leaf, data = ac_l_means)
+summary(ac_fdr_lm)
+```
+
+```{r}
+ac_fdr_seg <- segmented(ac_fdr_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_fdr_seg)
+```
+
+```{r}
+ac_fdr_seg$psi
+slope(ac_fdr_seg)
+ac_fdr_fitted <- fitted(ac_fdr_seg)
+ac_fdr_model <- data.frame(Leaf = ac_l_means$leaf, FDR = ac_fdr_fitted)
+ggplot(ac_fdr_model, aes(x = Leaf, y = FDR)) + geom_line()
+ac_fdr_lines <- ac_fdr_seg$psi[, 2]
+ac_fdr_mean_break <- ac_fdr_plot + geom_vline(xintercept = ac_fdr_lines, linetype = "dashed")
+ac_fdr_mean_break
+ggsave("ac_fdr_break.png")
+```
+
+We tested leaf number and tooth area:perimeter.
+```{r}
+skim(acerifolia, tooth.area.perimeter)
+ac_tap_plot <- ggplot(acerifolia, aes(x = leaf, y = tooth.area.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_tap_plot <- ac_tap_plot +labs(x = "Leaf number",
+                               y = "Tooth area: perimeter")
+ac_tap_plot
+
+```
+
+```{r}
+ac_tap_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.tap)) + geom_line() + theme_classic()
+ac_tap_mean_plot <- ac_tap_mean_plot +labs(x = "Leaf number",
+                               y = "Tooth Area: Perimeter")
+ac_tap_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:perimeter.
+```{r}
+ac_tap_lm <- lm(avg.tap ~ leaf, data = ac_l_means)
+summary(ac_tap_lm)
+```
+
+```{r}
+ac_tap_seg <- segmented(ac_tap_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_tap_seg)
+```
+
+```{r}
+ac_tap_seg$psi
+slope(ac_tap_seg)
+ac_tap_fitted <- fitted(ac_tap_seg)
+ac_tap_model <- data.frame(Leaf = ac_l_means$leaf, TAP = ac_tap_fitted)
+ggplot(ac_tap_model, aes(x = Leaf, y = TAP)) + geom_line()
+ac_tap_lines <- ac_tap_seg$psi[, 2]
+ac_tap_mean_break <- ac_tap_plot + geom_vline(xintercept = ac_tap_lines, linetype = "dashed")
+ac_tap_mean_break
+ggsave("ac_tap_break.png")
+```
+
+We tested leaf number and tooth area:internal perimeter.
+```{r}
+skim(acerifolia, tooth.area.int.perimeter)
+ac_taip_plot <- ggplot(acerifolia, aes(x = leaf, y = tooth.area.int.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_taip_plot <- ac_taip_plot +labs(x = "Leaf number",
+                               y = "Tooth area: internal perimeter")
+ac_taip_plot
+
+```
+
+```{r}
+ac_taip_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.taip)) + geom_line() + theme_classic()
+ac_taip_mean_plot <- ac_taip_mean_plot +labs(x = "Leaf number",
+                               y = "Tooth Area: Internal Perimeter")
+ac_taip_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:internal perimeter.
+```{r}
+ac_taip_lm <- lm(avg.taip ~ leaf, data = ac_l_means)
+summary(ac_taip_lm)
+```
+
+```{r}
+ac_taip_seg <- segmented(ac_taip_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_taip_seg)
+```
+
+```{r}
+ac_taip_seg$psi
+slope(ac_taip_seg)
+ac_taip_fitted <- fitted(ac_taip_seg)
+ac_taip_model <- data.frame(Leaf = ac_l_means$leaf, TAIP = ac_taip_fitted)
+ggplot(ac_taip_model, aes(x = Leaf, y = TAIP)) + geom_line()
+ac_taip_lines <- ac_taip_seg$psi[, 2]
+ac_taip_mean_break <- ac_taip_plot + geom_vline(xintercept = ac_taip_lines, linetype = "dashed")
+ac_taip_mean_break
+ggsave("ac_taip_break.png")
+```
+
+We tested leaf number and average tooth area.
+```{r}
+skim(acerifolia, average.tooth.area)
+ac_ta_plot <- ggplot(acerifolia, aes(x = leaf, y = average.tooth.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_ta_plot <- ac_ta_plot +labs(x = "Leaf number",
+                               y = "Average tooth area")
+ac_ta_plot
+
+```
+
+```{r}
+ac_ta_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.ta)) + geom_line() + theme_classic()
+ac_ta_mean_plot <- ac_ta_mean_plot +labs(x = "Leaf number",
+                               y = "Average tooth area")
+ac_ta_mean_plot
+```
+
+We ran a LM for leaf number and average tooth area.
+```{r}
+ac_ta_lm <- lm(avg.ta ~ leaf, data = ac_l_means)
+summary(ac_ta_lm)
+```
+
+```{r}
+ac_ta_seg <- segmented(ac_ta_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_ta_seg)
+```
+
+```{r}
+ac_ta_seg$psi
+slope(ac_ta_seg)
+ac_ta_fitted <- fitted(ac_ta_seg)
+ac_ta_model <- data.frame(Leaf = ac_l_means$leaf, TA = ac_ta_fitted)
+ggplot(ac_ta_model, aes(x = Leaf, y = TA)) + geom_line()
+ac_ta_lines <- ac_ta_seg$psi[, 2]
+ac_ta_mean_break <- ac_ta_plot + geom_vline(xintercept = ac_ta_lines, linetype = "dashed")
+ac_ta_mean_break
+ggsave("ac_ta_break.png")
+```
+
+We tested leaf number and teeth:perimeter.
+```{r}
+skim(acerifolia, teeth.perimeter)
+ac_tp_plot <- ggplot(acerifolia, aes(x = leaf, y = teeth.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_tp_plot <- ac_tp_plot +labs(x = "Leaf number",
+                               y = "Teeth:perimeter")
+ac_tp_plot
+
+```
+
+```{r}
+ac_tp_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.tp)) + geom_line() + theme_classic()
+ac_tp_mean_plot <- ac_tp_mean_plot +labs(x = "Leaf number",
+                               y = "Teeth:perimeter")
+ac_tp_mean_plot
+```
+
+We ran a LM for leaf number and teeth:perimeter.
+```{r}
+ac_tp_lm <- lm(avg.tp ~ leaf, data = ac_l_means)
+summary(ac_tp_lm)
+```
+
+```{r}
+ac_tp_seg <- segmented(ac_tp_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_tp_seg)
+```
+
+```{r}
+ac_tp_seg$psi
+slope(ac_tp_seg)
+ac_tp_fitted <- fitted(ac_tp_seg)
+ac_tp_model <- data.frame(Leaf = ac_l_means$leaf, TP = ac_tp_fitted)
+ggplot(ac_tp_model, aes(x = Leaf, y = TP)) + geom_line()
+ac_tp_lines <- ac_tp_seg$psi[, 2]
+ac_tp_mean_break <- ac_tp_plot + geom_vline(xintercept = ac_tp_lines, linetype = "dashed")
+ac_tp_mean_break
+ggsave("ac_tp_break.png")
+```
+
+We tested leaf number and teeth:internal perimeter.
+```{r}
+skim(acerifolia, teeth.int.perimeter)
+ac_tip_plot <- ggplot(acerifolia, aes(x = leaf, y = teeth.int.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_tip_plot <- ac_tip_plot +labs(x = "Leaf number",
+                               y = "Teeth:internal perimeter")
+ac_tip_plot
+
+```
+
+```{r}
+ac_tip_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.tip)) + geom_line() + theme_classic()
+ac_tip_mean_plot <- ac_tip_mean_plot +labs(x = "Leaf number",
+                               y = "Teeth:internal perimeter")
+ac_tip_mean_plot
+```
+
+We ran a LM for leaf number and teeth:internal perimeter.
+```{r}
+ac_tip_lm <- lm(avg.tip ~ leaf, data = ac_l_means)
+summary(ac_tip_lm)
+```
+
+```{r}
+ac_tip_seg <- segmented(ac_tip_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_tip_seg)
+```
+
+```{r}
+ac_tip_seg$psi
+slope(ac_tip_seg)
+ac_tip_fitted <- fitted(ac_tip_seg)
+ac_tip_model <- data.frame(Leaf = ac_l_means$leaf, TIP = ac_tip_fitted)
+ggplot(ac_tip_model, aes(x = Leaf, y = TIP)) + geom_line()
+ac_tip_lines <- ac_tip_seg$psi[, 2]
+ac_tip_mean_break <- ac_tip_plot + geom_vline(xintercept = ac_tip_lines, linetype = "dashed")
+ac_tip_mean_break
+ggsave("ac_tip_break.png")
+```
+
+We tested leaf number and perimeter:area.
+```{r}
+skim(acerifolia, perimeter.area)
+ac_pa_plot <- ggplot(acerifolia, aes(x = leaf, y = perimeter.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_pa_plot <- ac_pa_plot +labs(x = "Leaf number",
+                               y = "Perimeter:Area")
+ac_pa_plot
+
+```
+
+```{r}
+ac_pa_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.pa)) + geom_line() + theme_classic()
+ac_pa_mean_plot <- ac_pa_mean_plot +labs(x = "Leaf number",
+                               y = "Perimeter:Area")
+ac_pa_mean_plot
+```
+
+We ran a LM for leaf number and perimeter:area.
+```{r}
+ac_pa_lm <- lm(avg.pa ~ leaf, data = ac_l_means)
+summary(ac_pa_lm)
+```
+
+```{r}
+ac_pa_seg <- segmented(ac_pa_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_pa_seg)
+```
+
+```{r}
+ac_pa_seg$psi
+slope(ac_pa_seg)
+ac_pa_fitted <- fitted(ac_pa_seg)
+ac_pa_model <- data.frame(Leaf = ac_l_means$leaf, PA = ac_pa_fitted)
+ggplot(ac_pa_model, aes(x = Leaf, y = PA)) + geom_line()
+ac_pa_lines <- ac_pa_seg$psi[, 2]
+ac_pa_mean_break <- ac_pa_plot + geom_vline(xintercept = ac_pa_lines, linetype = "dashed")
+ac_pa_mean_break
+ggsave("ac_pa_break.png")
+```
+
+We tested leaf number and perimeter ratio.
+```{r}
+skim(acerifolia, perimeter.ratio)
+ac_pr_plot <- ggplot(acerifolia, aes(x = leaf, y = perimeter.ratio)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_pr_plot <- ac_pr_plot +labs(x = "Leaf number",
+                               y = "Perimeter Ratio")
+ac_pr_plot
+
+```
+
+```{r}
+ac_pr_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.pr)) + geom_line() + theme_classic()
+ac_pr_mean_plot <- ac_pr_mean_plot +labs(x = "Leaf number",
+                               y = "Perimeter Ratio")
+ac_pr_mean_plot
+```
+
+We ran a LM for leaf number and perimeter ratio.
+```{r}
+ac_pr_lm <- lm(avg.pr ~ leaf, data = ac_l_means)
+summary(ac_pr_lm)
+```
+
+```{r}
+ac_pr_seg <- segmented(ac_pr_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_pr_seg)
+```
+
+```{r}
+ac_pr_seg$psi
+slope(ac_pr_seg)
+ac_pr_fitted <- fitted(ac_pr_seg)
+ac_pr_model <- data.frame(Leaf = ac_l_means$leaf, PR = ac_pr_fitted)
+ggplot(ac_pr_model, aes(x = Leaf, y = PR)) + geom_line()
+ac_pr_lines <- ac_pr_seg$psi[, 2]
+ac_pr_mean_break <- ac_pr_plot + geom_vline(xintercept = ac_pr_lines, linetype = "dashed")
+ac_pr_mean_break
+ggsave("ac_pr_break.png")
+```
+
+We tested leaf number and compactness.
+```{r}
+skim(acerifolia, compactness)
+ac_cp_plot <- ggplot(acerifolia, aes(x = leaf, y = compactness)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_cp_plot <- ac_cp_plot +labs(x = "Leaf number",
+                               y = "Compactness")
+ac_cp_plot
+
+```
+
+```{r}
+ac_cp_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.cp)) + geom_line() + theme_classic()
+ac_cp_mean_plot <- ac_cp_mean_plot +labs(x = "Leaf number",
+                               y = "Compactness")
+ac_cp_mean_plot
+```
+
+We ran a LM for leaf number and compactness.
+```{r}
+ac_cp_lm <- lm(avg.cp ~ leaf, data = ac_l_means)
+summary(ac_cp_lm)
+```
+
+```{r}
+ac_cp_seg <- segmented(ac_cp_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_cp_seg)
+```
+
+```{r}
+ac_cp_seg$psi
+slope(ac_cp_seg)
+ac_cp_fitted <- fitted(ac_cp_seg)
+ac_cp_model <- data.frame(Leaf = ac_l_means$leaf, CP = ac_cp_fitted)
+ggplot(ac_cp_model, aes(x = Leaf, y = CP)) + geom_line()
+ac_cp_lines <- ac_cp_seg$psi[, 2]
+ac_cp_mean_break <- ac_cp_plot + geom_vline(xintercept = ac_cp_lines, linetype = "dashed")
+ac_cp_mean_break
+ggsave("ac_cp_break.png")
+```
+
+We tested leaf number and shape factor.
+```{r}
+skim(acerifolia, shape.factor)
+ac_sf_plot <- ggplot(acerifolia, aes(x = leaf, y = shape.factor)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_sf_plot <- ac_sf_plot +labs(x = "Leaf number",
+                               y = "Shape Factor")
+ac_sf_plot
+
+```
+
+```{r}
+ac_sf_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.sf)) + geom_line() + theme_classic()
+ac_sf_mean_plot <- ac_sf_mean_plot +labs(x = "Leaf number",
+                               y = "Shape Factor")
+ac_sf_mean_plot
+```
+
+We ran a LM for leaf number and shape factor.
+```{r}
+ac_sf_lm <- lm(avg.sf ~ leaf, data = ac_l_means)
+summary(ac_sf_lm)
+```
+
+```{r}
+ac_sf_seg <- segmented(ac_sf_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_sf_seg)
+```
+
+```{r}
+ac_sf_seg$psi
+slope(ac_sf_seg)
+ac_sf_fitted <- fitted(ac_sf_seg)
+ac_sf_model <- data.frame(Leaf = ac_l_means$leaf, SF = ac_sf_fitted)
+ggplot(ac_sf_model, aes(x = Leaf, y = SF)) + geom_line()
+ac_sf_lines <- ac_sf_seg$psi[, 2]
+ac_sf_mean_break <- ac_sf_plot + geom_vline(xintercept = ac_sf_lines, linetype = "dashed")
+ac_sf_mean_break
+ggsave("ac_sf_break.png")
+```
+
+We tested leaf number and teeth:blade area.
+```{r}
+skim(acerifolia, teeth.blade.area)
+ac_tba_plot <- ggplot(acerifolia, aes(x = leaf, y = teeth.blade.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_tba_plot <- ac_tba_plot +labs(x = "Leaf number",
+                               y = "Teeth:Blade Area")
+ac_tba_plot
+
+```
+
+```{r}
+ac_tba_mean_plot <- ggplot(ac_l_means, aes(x = leaf, y = avg.tba)) + geom_line() + theme_classic()
+ac_tba_mean_plot <- ac_tba_mean_plot +labs(x = "Leaf number",
+                               y = "Teeth:Blade Area")
+ac_tba_mean_plot
+```
+
+We ran a LM for leaf number and teeth:blade area.
+```{r}
+ac_tba_lm <- lm(avg.tba ~ leaf, data = ac_l_means)
+summary(ac_tba_lm)
+```
+
+```{r}
+ac_tba_seg <- segmented(ac_tba_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_tba_seg)
+```
+
+```{r}
+ac_tba_seg$psi
+slope(ac_tba_seg)
+ac_tba_fitted <- fitted(ac_tba_seg)
+ac_tba_model <- data.frame(Leaf = ac_l_means$leaf, TBA = ac_tba_fitted)
+ggplot(ac_tba_model, aes(x = Leaf, y = TBA)) + geom_line()
+ac_tba_lines <- ac_tba_seg$psi[, 2]
+ac_tba_mean_break <- ac_tba_plot + geom_vline(xintercept = ac_tba_lines, linetype = "dashed")
+ac_tba_mean_break
+ggsave("ac_tba_break.png")
+```
+
+We tested leaf number and tooth area:blade area for 2013.
+```{r}
+ac_taba13_plot <- ggplot(ac_13, aes(x = leaf, y = teeth.blade.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_taba13_plot <- ac_taba13_plot +labs(x = "Leaf number",
+                               y = "Tooth Area:Blade Area")
+ac_taba13_plot
+
+```
+
+```{r}
+ac_taba13_mean_plot <- ggplot(ac_taba13_mean, aes(x = leaf, y = avg.taba)) + geom_line() + theme_classic()
+ac_taba13_mean_plot <- ac_taba13_mean_plot +labs(x = "Leaf number",
+                               y = "Tooth Area:Blade Area")
+ac_taba13_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:blade area in 2013.
+```{r}
+ac_taba13_lm <- lm(avg.taba ~ leaf, data = ac_taba13_mean)
+summary(ac_taba13_lm)
+```
+
+```{r}
+ac_taba13_seg <- segmented(ac_taba13_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_taba13_seg)
+```
+
+```{r}
+ac_taba13_seg$psi
+slope(ac_taba13_seg)
+ac_taba13_fitted <- fitted(ac_taba13_seg)
+ac_taba13_model <- data.frame(Leaf = ac_taba13_mean$leaf, TABA = ac_taba13_fitted)
+ggplot(ac_taba13_model, aes(x = Leaf, y = TABA)) + geom_line()
+ac_taba13_lines <- ac_taba13_seg$psi[, 2]
+ac_taba13_mean_break <- ac_taba13_plot + geom_vline(xintercept = ac_taba13_lines, linetype = "dashed")
+ac_taba13_mean_break
+ggsave("ac_taba13_break.png")
+```
+
+We tested leaf number and tooth area:blade area for 2015.
+```{r}
+ac_taba15_plot <- ggplot(ac_15, aes(x = leaf, y = teeth.blade.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 12, 1))
+ac_taba15_plot <- ac_taba15_plot +labs(x = "Leaf number",
+                               y = "Tooth Area:Blade Area")
+ac_taba15_plot
+
+```
+
+```{r}
+ac_taba15_mean_plot <- ggplot(ac_taba15_mean, aes(x = leaf, y = avg.taba)) + geom_line() + theme_classic()
+ac_taba15_mean_plot <- ac_taba15_mean_plot +labs(x = "Leaf number",
+                               y = "Tooth Area:Blade Area")
+ac_taba15_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:blade area in 2015.
+```{r}
+ac_taba15_lm <- lm(avg.taba ~ leaf, data = ac_taba15_mean)
+summary(ac_taba15_lm)
+```
+
+```{r}
+ac_taba15_seg <- segmented(ac_taba15_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(ac_taba15_seg)
+```
+
+```{r}
+ac_taba15_seg$psi
+slope(ac_taba15_seg)
+ac_taba15_fitted <- fitted(ac_taba15_seg)
+ac_taba15_model <- data.frame(Leaf = ac_taba15_mean$leaf, TABA = ac_taba15_fitted)
+ggplot(ac_taba15_model, aes(x = Leaf, y = TABA)) + geom_line()
+ac_taba15_lines <- ac_taba15_seg$psi[, 2]
+ac_taba15_mean_break <- ac_taba15_plot + geom_vline(xintercept = ac_taba15_lines, linetype = "dashed")
+ac_taba15_mean_break
+ggsave("ac_taba15_break.png")
+```
