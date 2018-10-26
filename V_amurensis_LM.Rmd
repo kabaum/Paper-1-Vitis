@@ -69,3 +69,82 @@ Many variables showed statistically significant changes between growing seasons:
 am_13 <- filter(amurensis, year == 2013)
 am_15 <- filter(amurensis, year == 2015)
 ```
+
+Total teeth
+```{r}
+am_tt13_mean <-  amurensis %>% 
+  filter(year == 2013) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.tt = mean(total.teeth, na.rm = TRUE))
+
+am_tt15_mean <- amurensis %>% 
+  filter(year == 2015) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.tt = mean(total.teeth, na.rm = TRUE))
+```
+
+Tooth area:perimeter
+```{r}
+am_tap13_mean <-  amurensis %>% 
+  filter(year == 2013) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.tap = mean(tooth.area.perimeter, na.rm = TRUE))
+
+am_tap15_mean <- amurensis %>% 
+  filter(year == 2015) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.tap = mean(tooth.area.perimeter, na.rm = TRUE))
+```
+
+Tooth area:internal perimeter
+```{r}
+am_taip13_mean <-  amurensis %>% 
+  filter(year == 2013) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.taip = mean(tooth.area.int.perimeter, na.rm = TRUE))
+
+am_taip15_mean <- amurensis %>% 
+  filter(year == 2015) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.taip = mean(tooth.area.int.perimeter, na.rm = TRUE))
+```
+
+Average tooth area
+```{r}
+am_ata13_mean <-  amurensis %>% 
+  filter(year == 2013) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.ata = mean(average.tooth.area, na.rm = TRUE))
+
+am_ata15_mean <- amurensis %>% 
+  filter(year == 2015) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.ata = mean(average.tooth.area, na.rm = TRUE))
+```
+
+Total teeth:perimeter
+```{r}
+am_tp13_mean <-  amurensis %>% 
+  filter(year == 2013) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.tp = mean(teeth.perimeter, na.rm = TRUE))
+
+am_tp15_mean <- amurensis %>% 
+  filter(year == 2015) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.tp = mean(teeth.perimeter, na.rm = TRUE))
+```
+
+Perimeter:area
+```{r}
+am_pa13_mean <-  amurensis %>% 
+  filter(year == 2013) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.pa = mean(perimeter.area, na.rm = TRUE))
+
+am_pa15_mean <- amurensis %>% 
+  filter(year == 2015) %>% 
+  group_by(leaf) %>% 
+  summarize(avg.pa = mean(perimeter.area, na.rm = TRUE))
+```
+
