@@ -184,7 +184,7 @@ summary(am_fdr_lm)
 ```{r}
 am_fdr_seg <- segmented(am_fdr_lm,
                        seg.Z = ~ leaf,
-                       psi = list(leaf = c(4, 7, 11)))
+                       psi = list(leaf = c(6, 8, 11)))
 summary(am_fdr_seg)
 ```
 
@@ -200,3 +200,164 @@ am_fdr_mean_break
 ggsave("am_fdr_break.png")
 ```
 
+We tested leaf number and tooth area:blade area.
+```{r}
+am_taba_plot <- ggplot(amurensis, aes(x = leaf, y = tooth.area.blade.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 13, 1))
+am_taba_plot <- am_taba_plot +labs(x = "Leaf number",
+                               y = "Tooth area:blade area")
+am_taba_plot
+
+```
+
+```{r}
+am_taba_mean_plot <- ggplot(am_l_means, aes(x = leaf, y = avg.taba)) + geom_line() + theme_classic()
+am_taba_mean_plot <- am_taba_mean_plot +labs(x = "Leaf number",
+                               y = "Tooth area:blade area")
+am_taba_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:blade area.
+```{r}
+am_taba_lm <- lm(avg.taba ~ leaf, data = am_l_means)
+summary(am_taba_lm)
+```
+
+```{r}
+am_taba_seg <- segmented(am_taba_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 8, 11)))
+summary(am_taba_seg)
+```
+
+```{r}
+am_taba_seg$psi
+slope(am_taba_seg)
+am_taba_fitted <- fitted(am_taba_seg)
+am_taba_model <- data.frame(Leaf = am_l_means$leaf, TABA = am_taba_fitted)
+ggplot(am_taba_model, aes(x = Leaf, y = TABA)) + geom_line()
+am_taba_lines <- am_taba_seg$psi[, 2]
+am_taba_mean_break <- am_taba_plot + geom_vline(xintercept = am_taba_lines, linetype = "dashed")
+am_taba_mean_break
+ggsave("am_taba_break.png")
+```
+
+We tested leaf number and total teeth:perimeter.
+```{r}
+am_tp_plot <- ggplot(amurensis, aes(x = leaf, y = teeth.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 13, 1))
+am_tp_plot <- am_tp_plot +labs(x = "Leaf number",
+                               y = "Teeth:perimeter")
+am_tp_plot
+
+```
+
+```{r}
+am_tp_mean_plot <- ggplot(am_l_means, aes(x = leaf, y = avg.tp)) + geom_line() + theme_classic()
+am_tp_mean_plot <- am_tp_mean_plot +labs(x = "Leaf number",
+                               y = "Teeth.perimeter")
+am_tp_mean_plot
+```
+
+We ran a LM for leaf number and teeth:perimeter.
+```{r}
+am_tp_lm <- lm(avg.tp ~ leaf, data = am_l_means)
+summary(am_tp_lm)
+```
+
+```{r}
+am_tp_seg <- segmented(am_tp_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 8, 11)))
+summary(am_tp_seg)
+```
+
+```{r}
+am_tp_seg$psi
+slope(am_tp_seg)
+am_tp_fitted <- fitted(am_tp_seg)
+am_tp_model <- data.frame(Leaf = am_l_means$leaf, TP = am_tp_fitted)
+ggplot(am_tp_model, aes(x = Leaf, y = TP)) + geom_line()
+am_tp_lines <- am_tp_seg$psi[, 2]
+am_tp_mean_break <- am_tp_plot + geom_vline(xintercept = am_tp_lines, linetype = "dashed")
+am_tp_mean_break
+ggsave("am_tp_break.png")
+```
+
+We tested leaf number and total teeth:internal perimeter.
+```{r}
+am_tip_plot <- ggplot(amurensis, aes(x = leaf, y = teeth.int.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 13, 1))
+am_tip_plot <- am_tip_plot +labs(x = "Leaf number",
+                               y = "Teeth:internal perimeter")
+am_tip_plot
+```
+
+```{r}
+am_tip_mean_plot <- ggplot(am_l_means, aes(x = leaf, y = avg.tip)) + geom_line() + theme_classic()
+am_tip_mean_plot <- am_tip_mean_plot +labs(x = "Leaf number",
+                               y = "Teeth.internal perimeter")
+am_tip_mean_plot
+```
+
+We ran a LM for leaf number and teeth:internal perimeter.
+```{r}
+am_tip_lm <- lm(avg.tip ~ leaf, data = am_l_means)
+summary(am_tip_lm)
+```
+
+```{r}
+am_tip_seg <- segmented(am_tip_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 8, 11)))
+summary(am_tip_seg)
+```
+
+```{r}
+am_tip_seg$psi
+slope(am_tip_seg)
+am_tip_fitted <- fitted(am_tip_seg)
+am_tip_model <- data.frame(Leaf = am_l_means$leaf, TIP = am_tip_fitted)
+ggplot(am_tip_model, aes(x = Leaf, y = TIP)) + geom_line()
+am_tip_lines <- am_tip_seg$psi[, 2]
+am_tip_mean_break <- am_tip_plot + geom_vline(xintercept = am_tip_lines, linetype = "dashed")
+am_tip_mean_break
+ggsave("am_tip_break.png")
+```
+
+We tested leaf number and perimeter:area.
+```{r}
+am_pa_plot <- ggplot(amurensis, aes(x = leaf, y = perimeter.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 13, 1))
+am_pa_plot <- am_pa_plot +labs(x = "Leaf number",
+                               y = "Perimeter:area")
+am_pa_plot
+```
+
+```{r}
+am_pa_mean_plot <- ggplot(am_l_means, aes(x = leaf, y = avg.pa)) + geom_line() + theme_classic()
+am_pa_mean_plot <- am_pa_mean_plot +labs(x = "Leaf number",
+                               y = "Perimeter:area")
+am_pa_mean_plot
+```
+
+We ran a LM for leaf number and perimeter:area.
+```{r}
+am_pa_lm <- lm(avg.pa ~ leaf, data = am_l_means)
+summary(am_pa_lm)
+```
+
+```{r}
+am_pa_seg <- segmented(am_pa_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 8, 11)))
+summary(am_pa_seg)
+```
+
+```{r}
+am_pa_seg$psi
+slope(am_pa_seg)
+am_pa_fitted <- fitted(am_pa_seg)
+am_pa_model <- data.frame(Leaf = am_l_means$leaf, PA = am_pa_fitted)
+ggplot(am_pa_model, aes(x = Leaf, y = PA)) + geom_line()
+am_pa_lines <- am_pa_seg$psi[, 2]
+am_pa_mean_break <- am_pa_plot + geom_vline(xintercept = am_pa_lines, linetype = "dashed")
+am_pa_mean_break
+ggsave("am_pa_break.png")
+```
