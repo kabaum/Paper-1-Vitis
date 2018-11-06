@@ -64,7 +64,7 @@ r_l_means <-  riparia %>%
             avg.fdr = mean(feret.diameter.ratio),
             avg.tap = mean(tooth.area.perimeter, na.rm = TRUE),
             avg.taip = mean(tooth.area.int.perimeter, na.rm = TRUE),
-            avg.ta = mean(average.tooth.area, na.rm = TRUE),
+            avg.ata = mean(average.tooth.area, na.rm = TRUE),
             avg.taba = mean(tooth.area.blade.area, na.rm = TRUE),
             avg.tp = mean(teeth.perimeter),
             avg.tip = mean(teeth.int.perimeter),
@@ -72,10 +72,11 @@ r_l_means <-  riparia %>%
             avg.pr = mean(perimeter.ratio),
             avg.cp = mean(compactness),
             avg.sf = mean(shape.factor),
-            avg.tba = mean(teeth.blade.area))
+            avg.tba = mean(teeth.blade.area, na.rm = TRUE))
 ```
 
 Many variables showed statistically significant changes between growing seasons: tooth area to internal perimeter (TAIP), tooth area to blade area (TABA), total teeth to perimeter (TP), total teeth to internal perimeter (TIP), perimeter ratio (PR), compactness (CP), and shape factor (SF), so we need to split these variables for each year.
+
 ```{r}
 r_13 <- filter(riparia, year == 2013)
 r_15 <- filter(riparia, year == 2015)
@@ -174,7 +175,7 @@ r_sf15_mean <- riparia %>%
 
 We tested leaf number and total teeth.
 ```{r}
-r_tt_plot <- ggplot(riparia, aes(x = leaf, y = total.teeth)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 13, 1))
+r_tt_plot <- ggplot(riparia, aes(x = leaf, y = total.teeth)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
 r_tt_plot <- r_tt_plot +labs(x = "Leaf number",
                                y = "Total teeth")
 r_tt_plot
@@ -214,7 +215,7 @@ ggsave("r_tt_break.png")
 
 We tested leaf number and feret diameter ratio.
 ```{r}
-r_fdr_plot <- ggplot(riparia, aes(x = leaf, y = feret.diameter.ratio)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 13, 1))
+r_fdr_plot <- ggplot(riparia, aes(x = leaf, y = feret.diameter.ratio)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
 r_fdr_plot <- r_fdr_plot +labs(x = "Leaf number",
                                y = "FDR")
 r_fdr_plot
@@ -250,4 +251,164 @@ r_fdr_lines <- r_fdr_seg$psi[, 2]
 r_fdr_mean_break <- r_fdr_plot + geom_vline(xintercept = r_fdr_lines, linetype = "dashed")
 r_fdr_mean_break
 ggsave("r_fdr_break.png")
+```
+
+We tested leaf number and tooth area:perimeter.
+```{r}
+r_tap_plot <- ggplot(riparia, aes(x = leaf, y = tooth.area.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_tap_plot <- r_tap_plot +labs(x = "Leaf number",
+                               y = "Tooth area:perimeter")
+r_tap_plot
+```
+
+```{r}
+r_tap_mean_plot <- ggplot(r_l_means, aes(x = leaf, y = avg.tap)) + geom_line() + theme_classic()
+r_tap_mean_plot <- r_tap_mean_plot +labs(x = "Leaf number",
+                               y = "Tooth area:perimeter")
+r_tap_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:perimeter.
+```{r}
+r_tap_lm <- lm(avg.tap ~ leaf, data = r_l_means)
+summary(r_tap_lm)
+```
+
+```{r}
+r_tap_seg <- segmented(r_tap_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_tap_seg)
+```
+
+```{r}
+r_tap_seg$psi
+slope(r_tap_seg)
+r_tap_fitted <- fitted(r_tap_seg)
+r_tap_model <- data.frame(Leaf = r_l_means$leaf, TAP = r_tap_fitted)
+ggplot(r_tap_model, aes(x = Leaf, y = TAP)) + geom_line()
+r_tap_lines <- r_tap_seg$psi[, 2]
+r_tap_mean_break <- r_tap_plot + geom_vline(xintercept = r_tap_lines, linetype = "dashed")
+r_tap_mean_break
+ggsave("r_tap_break.png")
+```
+
+We tested leaf number and average tooth area.
+```{r}
+r_ata_plot <- ggplot(riparia, aes(x = leaf, y = average.tooth.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_ata_plot <- r_ata_plot +labs(x = "Leaf number",
+                               y = "Average tooth area")
+r_ata_plot
+```
+
+```{r}
+r_ata_mean_plot <- ggplot(r_l_means, aes(x = leaf, y = avg.ata)) + geom_line() + theme_classic()
+r_ata_mean_plot <- r_ata_mean_plot +labs(x = "Leaf number",
+                               y = "Average tooth area")
+r_ata_mean_plot
+```
+
+We ran a LM for leaf number and average tooth area.
+```{r}
+r_ata_lm <- lm(avg.ata ~ leaf, data = r_l_means)
+summary(r_ata_lm)
+```
+
+```{r}
+r_ata_seg <- segmented(r_ata_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_ata_seg)
+```
+
+```{r}
+r_ata_seg$psi
+slope(r_ata_seg)
+r_ata_fitted <- fitted(r_ata_seg)
+r_ata_model <- data.frame(Leaf = r_l_means$leaf, ATA = r_ata_fitted)
+ggplot(r_ata_model, aes(x = Leaf, y = ATA)) + geom_line()
+r_ata_lines <- r_ata_seg$psi[, 2]
+r_ata_mean_break <- r_ata_plot + geom_vline(xintercept = r_ata_lines, linetype = "dashed")
+r_ata_mean_break
+ggsave("r_ata_break.png")
+```
+
+We tested leaf number and perimeter:area.
+```{r}
+r_pa_plot <- ggplot(riparia, aes(x = leaf, y = perimeter.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_pa_plot <- r_pa_plot +labs(x = "Leaf number",
+                               y = "Perimeter:area")
+r_pa_plot
+```
+
+```{r}
+r_pa_mean_plot <- ggplot(r_l_means, aes(x = leaf, y = avg.pa)) + geom_line() + theme_classic()
+r_pa_mean_plot <- r_pa_mean_plot +labs(x = "Leaf number",
+                               y = "Perimeter:area")
+r_pa_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:perimeter.
+```{r}
+r_pa_lm <- lm(avg.pa ~ leaf, data = r_l_means)
+summary(r_pa_lm)
+```
+
+```{r}
+r_pa_seg <- segmented(r_pa_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_pa_seg)
+```
+
+```{r}
+r_pa_seg$psi
+slope(r_pa_seg)
+r_pa_fitted <- fitted(r_pa_seg)
+r_pa_model <- data.frame(Leaf = r_l_means$leaf, PA = r_pa_fitted)
+ggplot(r_pa_model, aes(x = Leaf, y = PA)) + geom_line()
+r_pa_lines <- r_pa_seg$psi[, 2]
+r_pa_mean_break <- r_pa_plot + geom_vline(xintercept = r_pa_lines, linetype = "dashed")
+r_pa_mean_break
+ggsave("r_pa_break.png")
+```
+
+We tested leaf number and teeth:blade area.
+```{r}
+r_tba_plot <- ggplot(riparia, aes(x = leaf, y = teeth.blade.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_tba_plot <- r_pa_plot +labs(x = "Leaf number",
+                               y = "Teeth blade area")
+r_tba_plot
+```
+
+```{r}
+r_tba_mean_plot <- ggplot(r_l_means, aes(x = leaf, y = avg.tba)) + geom_line() + theme_classic()
+r_tba_mean_plot <- r_tba_mean_plot +labs(x = "Leaf number",
+                               y = "Teeth: blade area")
+r_tba_mean_plot
+```
+
+We ran a LM for leaf number and teeth:blade area.
+```{r}
+r_tba_lm <- lm(avg.tba ~ leaf, data = r_l_means)
+summary(r_tba_lm)
+```
+
+```{r}
+r_tba_seg <- segmented(r_tba_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_tba_seg)
+```
+
+```{r}
+r_tba_seg$psi
+slope(r_tba_seg)
+r_tba_fitted <- fitted(r_tba_seg)
+r_tba_model <- data.frame(Leaf = r_l_means$leaf, TBA = r_tba_fitted)
+ggplot(r_tba_model, aes(x = Leaf, y = TBA)) + geom_line()
+r_tba_lines <- r_tba_seg$psi[, 2]
+r_tba_mean_break <- r_tba_plot + geom_vline(xintercept = r_tba_lines, linetype = "dashed")
+r_tba_mean_break
+ggsave("r_tba_break.png")
 ```
