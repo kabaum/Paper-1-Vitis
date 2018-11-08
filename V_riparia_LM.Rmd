@@ -413,7 +413,7 @@ r_tba_mean_break
 ggsave("r_tba_break.png")
 ```
 
-We tested leaf number and shape factor for 2013.
+We tested leaf number and tooth area:internal perimeter for 2013.
 ```{r}
 r_taip13_plot <- ggplot(r_13, aes(x = leaf, y = tooth.area.int.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
 r_taip13_plot <- r_taip13_plot +labs(x = "Leaf number",
@@ -490,7 +490,247 @@ ggplot(r_taip15_model, aes(x = Leaf, y = TAIP)) + geom_line()
 r_taip15_lines <- r_taip15_seg$psi[, 2]
 r_taip15_mean_break <- r_taip15_plot + geom_vline(xintercept = r_taip15_lines, linetype = "dashed")
 r_taip15_mean_break
-ggsave("r_taip13_break.png")
+ggsave("r_taip15_break.png")
+```
+
+We tested leaf number and shape factor for 2013.
+```{r}
+r_taba13_plot <- ggplot(r_13, aes(x = leaf, y = tooth.area.blade.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_taba13_plot <- r_taba13_plot +labs(x = "Leaf number",
+                               y = "Tooth area:blade area")
+r_taba13_plot
+```
+
+```{r}
+r_taba13_mean_plot <- ggplot(r_taba13_mean, aes(x = leaf, y = avg.taba)) + geom_line() + theme_classic()
+r_taba13_mean_plot <- r_taba13_mean_plot +labs(x = "Leaf number",
+                               y = "Tooth area:blade area")
+r_taba13_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:blade area in 2013.
+```{r}
+r_taba13_lm <- lm(avg.taba ~ leaf, data = r_taba13_mean)
+summary(r_taba13_lm)
+```
+
+```{r}
+r_taba13_seg <- segmented(r_taba13_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_taba13_seg)
+```
+
+```{r}
+r_taba13_seg$psi
+slope(r_taba13_seg)
+r_taba13_fitted <- fitted(r_taba13_seg)
+r_taba13_model <- data.frame(Leaf = r_taba13_mean$leaf, TABA = r_taba13_fitted)
+ggplot(r_taba13_model, aes(x = Leaf, y = TABA)) + geom_line()
+r_taba13_lines <- r_taba13_seg$psi[, 2]
+r_taba13_mean_break <- r_taba13_plot + geom_vline(xintercept = r_taba13_lines, linetype = "dashed")
+r_taba13_mean_break
+ggsave("r_taba13_break.png")
+```
+
+We tested leaf number and tooth area:blade area for 2015.
+```{r}
+r_taba15_plot <- ggplot(r_15, aes(x = leaf, y = tooth.area.blade.area)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_taba15_plot <- r_taba15_plot +labs(x = "Leaf number",
+                               y = "Tooth area:blade area")
+r_taba15_plot
+```
+
+```{r}
+r_taba15_mean_plot <- ggplot(r_taba15_mean, aes(x = leaf, y = avg.taba)) + geom_line() + theme_classic()
+r_taba15_mean_plot <- r_taba15_mean_plot +labs(x = "Leaf number",
+                               y = "Tooth area:blade area")
+r_taba15_mean_plot
+```
+
+We ran a LM for leaf number and tooth area:blade area in 2015.
+```{r}
+r_taba15_lm <- lm(avg.taba ~ leaf, data = r_taba15_mean)
+summary(r_taba15_lm)
+```
+
+```{r}
+r_taba15_seg <- segmented(r_taba15_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_taba15_seg)
+```
+
+```{r}
+r_taba15_seg$psi
+slope(r_taba15_seg)
+r_taba15_fitted <- fitted(r_taba15_seg)
+r_taba15_model <- data.frame(Leaf = r_taba15_mean$leaf, TABA = r_taba15_fitted)
+ggplot(r_taba15_model, aes(x = Leaf, y = TABA)) + geom_line()
+r_taba15_lines <- r_taba15_seg$psi[, 2]
+r_taba15_mean_break <- r_taba15_plot + geom_vline(xintercept = r_taba15_lines, linetype = "dashed")
+r_taba15_mean_break
+ggsave("r_taba15_break.png")
+```
+
+We tested leaf number and total teeth:perimeter for 2013.
+```{r}
+r_tp13_plot <- ggplot(r_13, aes(x = leaf, y = teeth.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_tp13_plot <- r_tp13_plot +labs(x = "Leaf number",
+                               y = "Total teeth:perimeter")
+r_tp13_plot
+```
+
+```{r}
+r_tp13_mean_plot <- ggplot(r_tp13_mean, aes(x = leaf, y = avg.tp)) + geom_line() + theme_classic()
+r_tp13_mean_plot <- r_tp13_mean_plot +labs(x = "Leaf number",
+                               y = "Total teeth:perimeter")
+r_tp13_mean_plot
+```
+
+We ran a LM for leaf number and total teeth:perimeter in 2013.
+```{r}
+r_tp13_lm <- lm(avg.tp ~ leaf, data = r_tp13_mean)
+summary(r_tp13_lm)
+```
+
+```{r}
+r_tp13_seg <- segmented(r_tp13_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_tp13_seg)
+```
+
+```{r}
+r_tp13_seg$psi
+slope(r_tp13_seg)
+r_tp13_fitted <- fitted(r_tp13_seg)
+r_tp13_model <- data.frame(Leaf = r_tp13_mean$leaf, TP = r_tp13_fitted)
+ggplot(r_tp13_model, aes(x = Leaf, y = TP)) + geom_line()
+r_tp13_lines <- r_tp13_seg$psi[, 2]
+r_tp13_mean_break <- r_tp13_plot + geom_vline(xintercept = r_tp13_lines, linetype = "dashed")
+r_tp13_mean_break
+ggsave("r_tp13_break.png")
+```
+
+We tested leaf number and total teeth:perimeter for 2015.
+```{r}
+r_tp15_plot <- ggplot(r_15, aes(x = leaf, y = teeth.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_tp15_plot <- r_tp15_plot +labs(x = "Leaf number",
+                               y = "Total teeth:perimeter")
+r_tp15_plot
+```
+
+```{r}
+r_tp15_mean_plot <- ggplot(r_tp15_mean, aes(x = leaf, y = avg.tp)) + geom_line() + theme_classic()
+r_tp15_mean_plot <- r_tp15_mean_plot +labs(x = "Leaf number",
+                               y = "Total teeth:perimeter")
+r_tp15_mean_plot
+```
+
+We ran a LM for leaf number and total teeth:perimeter in 2015.
+```{r}
+r_tp15_lm <- lm(avg.tp ~ leaf, data = r_tp15_mean)
+summary(r_tp15_lm)
+```
+
+```{r}
+r_tp15_seg <- segmented(r_tp15_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_tp15_seg)
+```
+
+```{r}
+r_tp15_seg$psi
+slope(r_tp15_seg)
+r_tp15_fitted <- fitted(r_tp15_seg)
+r_tp15_model <- data.frame(Leaf = r_tp15_mean$leaf, TP = r_tp15_fitted)
+ggplot(r_tp15_model, aes(x = Leaf, y = TP)) + geom_line()
+r_tp15_lines <- r_tp15_seg$psi[, 2]
+r_tp15_mean_break <- r_tp15_plot + geom_vline(xintercept = r_tp15_lines, linetype = "dashed")
+r_tp15_mean_break
+ggsave("r_tp15_break.png")
+```
+
+We tested leaf number and total teeth:internal perimeter for 2013.
+```{r}
+r_tip13_plot <- ggplot(r_13, aes(x = leaf, y = teeth.int.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_tip13_plot <- r_tip13_plot +labs(x = "Leaf number",
+                               y = "Total teeth:internal perimeter")
+r_tip13_plot
+```
+
+```{r}
+r_tip13_mean_plot <- ggplot(r_tip13_mean, aes(x = leaf, y = avg.tip)) + geom_line() + theme_classic()
+r_tip13_mean_plot <- r_tip13_mean_plot +labs(x = "Leaf number",
+                               y = "Total teeth:internal perimeter")
+r_tip13_mean_plot
+```
+
+We ran a LM for leaf number and total teeth:internal perimeter in 2013.
+```{r}
+r_tip13_lm <- lm(avg.tip ~ leaf, data = r_tip13_mean)
+summary(r_tip13_lm)
+```
+
+```{r}
+r_tip13_seg <- segmented(r_tip13_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_tip13_seg)
+```
+
+```{r}
+r_tip13_seg$psi
+slope(r_tip13_seg)
+r_tip13_fitted <- fitted(r_tip13_seg)
+r_tip13_model <- data.frame(Leaf = r_tip13_mean$leaf, TIP = r_tip13_fitted)
+ggplot(r_tip13_model, aes(x = Leaf, y = TIP)) + geom_line()
+r_tip13_lines <- r_tip13_seg$psi[, 2]
+r_tip13_mean_break <- r_tip13_plot + geom_vline(xintercept = r_tip13_lines, linetype = "dashed")
+r_tip13_mean_break
+ggsave("r_tip13_break.png")
+```
+
+We tested leaf number and total teeth:internal perimeter for 2015.
+```{r}
+r_tip15_plot <- ggplot(r_15, aes(x = leaf, y = teeth.int.perimeter)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_tip15_plot <- r_tip15_plot +labs(x = "Leaf number",
+                               y = "Total teeth:internal perimeter")
+r_tip15_plot
+```
+
+```{r}
+r_tip15_mean_plot <- ggplot(r_tip15_mean, aes(x = leaf, y = avg.tip)) + geom_line() + theme_classic()
+r_tip15_mean_plot <- r_tip15_mean_plot +labs(x = "Leaf number",
+                               y = "Total teeth:internal perimeter")
+r_tip15_mean_plot
+```
+
+We ran a LM for leaf number and total teeth:perimeter in 2015.
+```{r}
+r_tip15_lm <- lm(avg.tip ~ leaf, data = r_tip15_mean)
+summary(r_tip15_lm)
+```
+
+```{r}
+r_tip15_seg <- segmented(r_tip15_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_tip15_seg)
+```
+
+```{r}
+r_tip15_seg$psi
+slope(r_tip15_seg)
+r_tip15_fitted <- fitted(r_tip15_seg)
+r_tip15_model <- data.frame(Leaf = r_tip15_mean$leaf, TIP = r_tip15_fitted)
+ggplot(r_tip15_model, aes(x = Leaf, y = TIP)) + geom_line()
+r_tip15_lines <- r_tip15_seg$psi[, 2]
+r_tip15_mean_break <- r_tip15_plot + geom_vline(xintercept = r_tip15_lines, linetype = "dashed")
+r_tip15_mean_break
+ggsave("r_tip15_break.png")
 ```
 
 We tested leaf number and shape factor for 2013.
@@ -570,6 +810,167 @@ ggplot(r_sf15_model, aes(x = Leaf, y = SF)) + geom_line()
 r_sf15_lines <- r_sf15_seg$psi[, 2]
 r_sf15_mean_break <- r_sf15_plot + geom_vline(xintercept = r_sf15_lines, linetype = "dashed")
 r_sf15_mean_break
-ggsave("r_sf13_break.png")
+ggsave("r_sf15_break.png")
+```
+
+
+We tested leaf number and perimeter ratio for 2013.
+```{r}
+r_pr13_plot <- ggplot(r_13, aes(x = leaf, y = perimeter.ratio)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_pr13_plot <- r_pr13_plot +labs(x = "Leaf number",
+                               y = "Perimeter ratio")
+r_pr13_plot
+```
+
+```{r}
+r_pr13_mean_plot <- ggplot(r_pr13_mean, aes(x = leaf, y = avg.pr)) + geom_line() + theme_classic()
+r_pr13_mean_plot <- r_pr13_mean_plot +labs(x = "Leaf number",
+                               y = "Perimeter ratio")
+r_pr13_mean_plot
+```
+
+We ran a LM for leaf number and perimeter ratio in 2013.
+```{r}
+r_pr13_lm <- lm(avg.pr ~ leaf, data = r_pr13_mean)
+summary(r_pr13_lm)
+```
+
+```{r}
+r_pr13_seg <- segmented(r_pr13_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 11)))
+summary(r_pr13_seg)
+```
+
+```{r}
+r_pr13_seg$psi
+slope(r_pr13_seg)
+r_pr13_fitted <- fitted(r_pr13_seg)
+r_pr13_model <- data.frame(Leaf = r_pr13_mean$leaf, PR = r_pr13_fitted)
+ggplot(r_pr13_model, aes(x = Leaf, y = PR)) + geom_line()
+r_pr13_lines <- r_pr13_seg$psi[, 2]
+r_pr13_mean_break <- r_pr13_plot + geom_vline(xintercept = r_pr13_lines, linetype = "dashed")
+r_pr13_mean_break
+ggsave("r_pr13_break.png")
+```
+
+We tested leaf number and perimeter ratio for 2015.
+```{r}
+r_pr15_plot <- ggplot(r_15, aes(x = leaf, y = perimeter.ratio)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_pr15_plot <- r_pr15_plot +labs(x = "Leaf number",
+                               y = "Perimeter ratio")
+r_pr15_plot
+```
+
+```{r}
+r_pr15_mean_plot <- ggplot(r_pr15_mean, aes(x = leaf, y = avg.pr)) + geom_line() + theme_classic()
+r_pr15_mean_plot <- r_pr15_mean_plot +labs(x = "Leaf number",
+                               y = "Perimeter ratio")
+r_pr15_mean_plot
+```
+
+We ran a LM for leaf number and perimeter ratio in 2015.
+```{r}
+r_pr15_lm <- lm(avg.pr ~ leaf, data = r_pr15_mean)
+summary(r_pr15_lm)
+```
+
+```{r}
+r_pr15_seg <- segmented(r_pr15_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_pr15_seg)
+```
+
+```{r}
+r_pr15_seg$psi
+slope(r_pr15_seg)
+r_pr15_fitted <- fitted(r_pr15_seg)
+r_pr15_model <- data.frame(Leaf = r_pr15_mean$leaf, PR = r_pr15_fitted)
+ggplot(r_pr15_model, aes(x = Leaf, y = PR)) + geom_line()
+r_pr15_lines <- r_pr15_seg$psi[, 2]
+r_pr15_mean_break <- r_pr15_plot + geom_vline(xintercept = r_pr15_lines, linetype = "dashed")
+r_pr15_mean_break
+ggsave("r_pr15_break.png")
+```
+
+We tested leaf number and compactness for 2013.
+```{r}
+r_cp13_plot <- ggplot(r_13, aes(x = leaf, y = compactness)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_cp13_plot <- r_cp13_plot +labs(x = "Leaf number",
+                               y = "Compactness")
+r_cp13_plot
+```
+
+```{r}
+r_cp13_mean_plot <- ggplot(r_cp13_mean, aes(x = leaf, y = avg.cp)) + geom_line() + theme_classic()
+r_cp13_mean_plot <- r_cp13_mean_plot +labs(x = "Leaf number",
+                               y = "Compactness")
+r_cp13_mean_plot
+```
+
+We ran a LM for leaf number and compactness in 2013.
+```{r}
+r_cp13_lm <- lm(avg.cp ~ leaf, data = r_cp13_mean)
+summary(r_cp13_lm)
+```
+
+```{r}
+r_cp13_seg <- segmented(r_cp13_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 11)))
+summary(r_cp13_seg)
+```
+
+```{r}
+r_cp13_seg$psi
+slope(r_cp13_seg)
+r_cp13_fitted <- fitted(r_cp13_seg)
+r_cp13_model <- data.frame(Leaf = r_cp13_mean$leaf, CP = r_cp13_fitted)
+ggplot(r_cp13_model, aes(x = Leaf, y = CP)) + geom_line()
+r_cp13_lines <- r_cp13_seg$psi[, 2]
+r_cp13_mean_break <- r_cp13_plot + geom_vline(xintercept = r_cp13_lines, linetype = "dashed")
+r_cp13_mean_break
+ggsave("r_cp13_break.png")
+```
+
+We tested leaf number and compactness for 2015.
+```{r}
+r_cp15_plot <- ggplot(r_15, aes(x = leaf, y = compactness)) + geom_smooth() + theme_classic() + scale_x_continuous(breaks = seq(0, 14, 1))
+r_cp15_plot <- r_cp15_plot +labs(x = "Leaf number",
+                               y = "Compactness")
+r_cp15_plot
+```
+
+```{r}
+r_cp15_mean_plot <- ggplot(r_cp15_mean, aes(x = leaf, y = avg.cp)) + geom_line() + theme_classic()
+r_cp15_mean_plot <- r_cp15_mean_plot +labs(x = "Leaf number",
+                               y = "Compactness")
+r_cp15_mean_plot
+```
+
+We ran a LM for leaf number and perimeter ratio in 2015.
+```{r}
+r_cp15_lm <- lm(avg.cp ~ leaf, data = r_cp15_mean)
+summary(r_cp15_lm)
+```
+
+```{r}
+r_cp15_seg <- segmented(r_cp15_lm,
+                       seg.Z = ~ leaf,
+                       psi = list(leaf = c(3, 7, 10)))
+summary(r_cp15_seg)
+```
+
+```{r}
+r_cp15_seg$psi
+slope(r_cp15_seg)
+r_cp15_fitted <- fitted(r_cp15_seg)
+r_cp15_model <- data.frame(Leaf = r_cp15_mean$leaf, CP = r_cp15_fitted)
+ggplot(r_cp15_model, aes(x = Leaf, y = CP)) + geom_line()
+r_cp15_lines <- r_cp15_seg$psi[, 2]
+r_cp15_mean_break <- r_cp15_plot + geom_vline(xintercept = r_cp15_lines, linetype = "dashed")
+r_cp15_mean_break
+ggsave("r_cp15_break.png")
 ```
 
