@@ -114,8 +114,14 @@ We ran a LM for leaf number and total teeth.
 ```{r}
 ac_tt_lm <- lm(avg.tt ~ leaf, data = ac_l_means)
 summary(ac_tt_lm)
+ac_tt_res <- resid(ac_tt_lm)
+plot(avg.tt ~leaf, ac_l_means,
+     ylab="Residuals", xlab="leaf",
+     main="Total teeth")
 ```
+The average leaf in the dataset has 47 teeth and the number of teeth decreases by one as leaves get older. There is a relationship between leaf number and total teeth and about half of the variance in total teeth can be explained by leaf number.
 
+ 
 ```{r}
 ac_tt_seg <- segmented(ac_tt_lm,
                        seg.Z = ~ leaf,
@@ -142,7 +148,6 @@ ac_fdr_plot <- ggplot(acerifolia, aes(x = leaf, y = feret.diameter.ratio)) + geo
 ac_fdr_plot <- ac_fdr_plot +labs(x = "Leaf number",
                                y = "Feret Diameter Ratio")
 ac_fdr_plot
-
 ```
 
 
@@ -158,6 +163,7 @@ We ran a LM for leaf number and feret diamter ratio.
 ac_fdr_lm <- lm(avg.fdr ~ leaf, data = ac_l_means)
 summary(ac_fdr_lm)
 ```
+The average leaf in the dataset has an FDR of 0.7 and the FDR increases by ~0.009 as the leaves get older. There is a relationship between leaf number and FDR and about 75% of the variance in FDR can be explained by leaf number.
 
 ```{r}
 ac_fdr_seg <- segmented(ac_fdr_lm,
@@ -185,7 +191,6 @@ ac_tap_plot <- ggplot(acerifolia, aes(x = leaf, y = tooth.area.perimeter)) + geo
 ac_tap_plot <- ac_tap_plot +labs(x = "Leaf number",
                                y = "Tooth area: perimeter")
 ac_tap_plot
-
 ```
 
 ```{r}
@@ -200,6 +205,8 @@ We ran a LM for leaf number and tooth area:perimeter.
 ac_tap_lm <- lm(avg.tap ~ leaf, data = ac_l_means)
 summary(ac_tap_lm)
 ```
+
+The average leaf in the dataset has a TAP of 0.04 and the TAP increases by 0.003 as the leaves get older. There is a relationship between leaf number and TAP and about 34% of the variance in TAP can be explained by leaf number.
 
 ```{r}
 ac_tap_seg <- segmented(ac_tap_lm,
@@ -227,7 +234,6 @@ ac_taip_plot <- ggplot(acerifolia, aes(x = leaf, y = tooth.area.int.perimeter)) 
 ac_taip_plot <- ac_taip_plot +labs(x = "Leaf number",
                                y = "Tooth area: internal perimeter")
 ac_taip_plot
-
 ```
 
 ```{r}
@@ -242,6 +248,8 @@ We ran a LM for leaf number and tooth area:internal perimeter.
 ac_taip_lm <- lm(avg.taip ~ leaf, data = ac_l_means)
 summary(ac_taip_lm)
 ```
+
+The average leaf in the dataset has a TAIP of 0.06 and the TAIP increases by 0.003 as the leaves get older. There is not a strong relationship between leaf number and TAIP and about 22% of the variance in TAP can be explained by leaf number.
 
 ```{r}
 ac_taip_seg <- segmented(ac_taip_lm,
@@ -285,6 +293,8 @@ ac_ta_lm <- lm(avg.ta ~ leaf, data = ac_l_means)
 summary(ac_ta_lm)
 ```
 
+The average leaf in the dataset has a ATA of 0.05 and the TAIP increases by 0.007 as the leaves get older. There is a weak relationship between leaf number and ATA and about 32% of the variance in ATA can be explained by leaf number.
+
 ```{r}
 ac_ta_seg <- segmented(ac_ta_lm,
                        seg.Z = ~ leaf,
@@ -326,6 +336,8 @@ We ran a LM for leaf number and teeth:perimeter.
 ac_tp_lm <- lm(avg.tp ~ leaf, data = ac_l_means)
 summary(ac_tp_lm)
 ```
+
+The average leaf in the dataset has a TP of 1.12 and the TP decreases by 0.04 as the leaves get older. There is a relationship between leaf number and TP and about 30% of the variance in TP can be explained by leaf number.
 
 ```{r}
 ac_tp_seg <- segmented(ac_tp_lm,
@@ -369,6 +381,8 @@ ac_tip_lm <- lm(avg.tip ~ leaf, data = ac_l_means)
 summary(ac_tip_lm)
 ```
 
+The average leaf in the dataset has a TIP of 1.67 and the TIP decreases by 0.07 as the leaves get older. There is a relationship between leaf number and TIP and about 45% of the variance in TIP can be explained by leaf number.
+
 ```{r}
 ac_tip_seg <- segmented(ac_tip_lm,
                        seg.Z = ~ leaf,
@@ -410,6 +424,8 @@ We ran a LM for leaf number and perimeter:area.
 ac_pa_lm <- lm(avg.pa ~ leaf, data = ac_l_means)
 summary(ac_pa_lm)
 ```
+
+The average leaf in the dataset has a PA of 2.33 and the PA decreases by 0.14 as the leaves get older. There is a relationship between leaf number and PA and about 41% of the variance in PA can be explained by leaf number.
 
 ```{r}
 ac_pa_seg <- segmented(ac_pa_lm,
@@ -453,6 +469,8 @@ ac_pr_lm <- lm(avg.pr ~ leaf, data = ac_l_means)
 summary(ac_pr_lm)
 ```
 
+The average leaf in the dataset has a PR of 1.5 and the PR decreases by 0.02 as the leaves get older. There is a relationship between leaf number and PR and about 68% of the variance in PR can be explained by leaf number.
+
 ```{r}
 ac_pr_seg <- segmented(ac_pr_lm,
                        seg.Z = ~ leaf,
@@ -494,6 +512,8 @@ We ran a LM for leaf number and compactness.
 ac_cp_lm <- lm(avg.cp ~ leaf, data = ac_l_means)
 summary(ac_cp_lm)
 ```
+
+The average leaf in the dataset has a CP of 92 and the CP decreases by 4.3 as the leaves get older. There is a strong relationship between leaf number and CP and about 75% of the variance in PR can be explained by leaf number.
 
 ```{r}
 ac_cp_seg <- segmented(ac_cp_lm,
@@ -537,6 +557,8 @@ ac_sf_lm <- lm(avg.sf ~ leaf, data = ac_l_means)
 summary(ac_sf_lm)
 ```
 
+The average leaf in the dataset has a SF of 0.12 and the SF increases by 0.01 as the leaves get older. There is a strong relationship between leaf number and SF and about 95% of the variance in SF can be explained by leaf number.
+
 ```{r}
 ac_sf_seg <- segmented(ac_sf_lm,
                        seg.Z = ~ leaf,
@@ -579,6 +601,8 @@ ac_tba_lm <- lm(avg.tba ~ leaf, data = ac_l_means)
 summary(ac_tba_lm)
 ```
 
+The average leaf in the dataset has a TBA of 2.98 and the TBA decreases by 0.23 as the leaves get older. There is a strong relationship between leaf number and TBA and about 40% of the variance in TBA can be explained by leaf number.
+
 ```{r}
 ac_tba_seg <- segmented(ac_tba_lm,
                        seg.Z = ~ leaf,
@@ -619,6 +643,8 @@ We ran a LM for leaf number and tooth area:blade area in 2013.
 ac_taba13_lm <- lm(avg.taba ~ leaf, data = ac_taba13_mean)
 summary(ac_taba13_lm)
 ```
+
+The average leaf in the dataset has a TABA of 0.069 and the TABA decreases by 0.0038 as the leaves get older. There is not a relationship between leaf number and TABA and about 0% of the variance in TBA can be explained by leaf number.
 
 ```{r}
 ac_taba13_seg <- segmented(ac_taba13_lm,
@@ -661,10 +687,12 @@ ac_taba15_lm <- lm(avg.taba ~ leaf, data = ac_taba15_mean)
 summary(ac_taba15_lm)
 ```
 
+The average leaf in the dataset has a TABA of 0.081 and the TABA decreases by 0.0014 as the leaves get older. There is a weak relationship between leaf number and TABA and about 0% of the variance in TBA can be explained by leaf number.
+
 ```{r}
 ac_taba15_seg <- segmented(ac_taba15_lm,
                        seg.Z = ~ leaf,
-                       psi = list(leaf = c(3, 7, 10)))
+                       psi = list(leaf = c(5, 7, 10)))
 summary(ac_taba15_seg)
 ```
 
