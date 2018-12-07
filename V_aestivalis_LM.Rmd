@@ -66,7 +66,7 @@ av_l_means <-  aestivalis %>%
             avg.taip = mean(tooth.area.int.perimeter, na.rm = TRUE),
             avg.ta = mean(average.tooth.area, na.rm = TRUE),
             avg.taba = mean(tooth.area.blade.area, na.rm = TRUE),
-            avg.tp = mean(teeth.perimeter),
+            avg.tp = mean(teeth.perimeter, na.rm = TRUE),
             avg.tip = mean(teeth.int.perimeter),
             avg.pa = mean(perimeter.area),
             avg.pr = mean(perimeter.ratio),
@@ -152,7 +152,7 @@ av_fdr_mean_plot
 
 We ran a LM for leaf number and feret diamter ratio.
 ```{r}
-av_fdr_lm <- lm(avg.fdr ~ leaf, data = av_l_means)
+av_fdr_lm <- lm(feret.diameter.ratio ~ leaf, data = aestivalis)
 summary(av_fdr_lm)
 ```
 
@@ -167,7 +167,7 @@ summary(av_fdr_seg)
 av_fdr_seg$psi
 slope(av_fdr_seg)
 av_fdr_fitted <- fitted(av_fdr_seg)
-av_fdr_model <- data.frame(Leaf = av_l_means$leaf, FDR = av_fdr_fitted)
+av_fdr_model <- data.frame(Leaf = aestivalis$leaf, FDR = av_fdr_fitted)
 ggplot(av_fdr_model, aes(x = Leaf, y = FDR)) + geom_line()
 av_fdr_lines <- av_fdr_seg$psi[, 2]
 av_fdr_mean_break <- av_fdr_plot + geom_vline(xintercept = av_fdr_lines, linetype = "dashed")
@@ -192,7 +192,7 @@ av_tap_mean_plot
 
 We ran a LM for leaf number and tooth area:perimeter.
 ```{r}
-av_tap_lm <- lm(avg.tap ~ leaf, data = av_l_means)
+av_tap_lm <- lm(tooth.area.perimeter ~ leaf, data = aestivalis)
 summary(av_tap_lm)
 ```
 
@@ -232,7 +232,7 @@ av_taip_mean_plot
 
 We ran a LM for leaf number and tooth area:internal perimeter.
 ```{r}
-av_taip_lm <- lm(avg.taip ~ leaf, data = av_l_means)
+av_taip_lm <- lm(tooth.area.int.perimeter ~ leaf, data = aestivalis)
 summary(av_taip_lm)
 ```
 
@@ -247,7 +247,7 @@ summary(av_taip_seg)
 av_taip_seg$psi
 slope(av_taip_seg)
 av_taip_fitted <- fitted(av_taip_seg)
-av_taip_model <- data.frame(Leaf = av_l_means$leaf, TAIP = av_taip_fitted)
+av_taip_model <- data.frame(Leaf = aestivalis$leaf, TAIP = av_taip_fitted)
 ggplot(av_taip_model, aes(x = Leaf, y = TAIP)) + geom_line()
 av_taip_lines <- av_taip_seg$psi[, 2]
 av_taip_mean_break <- av_taip_plot + geom_vline(xintercept = av_taip_lines, linetype = "dashed")
@@ -273,7 +273,7 @@ av_ta_mean_plot
 
 We ran a LM for leaf number and average tooth area.
 ```{r}
-av_ta_lm <- lm(avg.ta ~ leaf, data = av_l_means)
+av_ta_lm <- lm(average.tooth.area ~ leaf, data = aestivalis)
 summary(av_ta_lm)
 ```
 
@@ -288,7 +288,7 @@ summary(av_ta_seg)
 av_ta_seg$psi
 slope(av_ta_seg)
 av_ta_fitted <- fitted(av_ta_seg)
-av_ta_model <- data.frame(Leaf = av_l_means$leaf, TA = av_ta_fitted)
+av_ta_model <- data.frame(Leaf = aestivalis$leaf, TA = av_ta_fitted)
 ggplot(av_ta_model, aes(x = Leaf, y = TA)) + geom_line()
 av_ta_lines <- av_ta_seg$psi[, 2]
 av_ta_mean_break <- av_ta_plot + geom_vline(xintercept = av_ta_lines, linetype = "dashed")
@@ -314,7 +314,7 @@ av_tp_mean_plot
 
 We ran a LM for leaf number and teeth:perimeter.
 ```{r}
-av_tp_lm <- lm(avg.tp ~ leaf, data = av_l_means)
+av_tp_lm <- lm(teeth.perimeter ~ leaf, data = aestivalis)
 summary(av_tp_lm)
 ```
 
@@ -329,7 +329,7 @@ summary(av_tp_seg)
 av_tp_seg$psi
 slope(av_tp_seg)
 av_tp_fitted <- fitted(av_tp_seg)
-av_tp_model <- data.frame(Leaf = av_l_means$leaf, TP = av_tp_fitted)
+av_tp_model <- data.frame(Leaf = aestivalis$leaf, TP = av_tp_fitted)
 ggplot(av_tp_model, aes(x = Leaf, y = TP)) + geom_line()
 av_tp_lines <- av_tp_seg$psi[, 2]
 av_tp_mean_break <- av_tp_plot + geom_vline(xintercept = av_tp_lines, linetype = "dashed")
@@ -355,7 +355,7 @@ av_tip_mean_plot
 
 We ran a LM for leaf number and teeth:internal perimeter.
 ```{r}
-av_tip_lm <- lm(avg.tip ~ leaf, data = av_l_means)
+av_tip_lm <- lm(teeth.int.perimeter ~ leaf, data = aestivalis)
 summary(av_tip_lm)
 ```
 
@@ -370,7 +370,7 @@ summary(av_tip_seg)
 av_tip_seg$psi
 slope(av_tip_seg)
 av_tip_fitted <- fitted(av_tip_seg)
-av_tip_model <- data.frame(Leaf = av_l_means$leaf, TIP = av_tip_fitted)
+av_tip_model <- data.frame(Leaf = aestivalis$leaf, TIP = av_tip_fitted)
 ggplot(av_tip_model, aes(x = Leaf, y = TIP)) + geom_line()
 av_tip_lines <- av_tip_seg$psi[, 2]
 av_tip_mean_break <- av_tip_plot + geom_vline(xintercept = av_tip_lines, linetype = "dashed")
@@ -396,14 +396,14 @@ av_pa_mean_plot
 
 We ran a LM for leaf number and perimeter:area.
 ```{r}
-av_pa_lm <- lm(avg.pa ~ leaf, data = av_l_means)
+av_pa_lm <- lm(perimeter.area ~ leaf, data = aestivalis)
 summary(av_pa_lm)
 ```
 
 ```{r}
 av_pa_seg <- segmented(av_pa_lm,
                        seg.Z = ~ leaf,
-                       psi = list(leaf = c(2, 7, 10)))
+                       psi = list(leaf = c(5, 7, 10)))
 summary(av_pa_seg)
 ```
 
@@ -436,14 +436,14 @@ av_pr_mean_plot
 
 We ran a LM for leaf number and perimeter ratio.
 ```{r}
-av_pr_lm <- lm(avg.pr ~ leaf, data = av_l_means)
+av_pr_lm <- lm(perimeter.ratio ~ leaf, data = aestivalis)
 summary(av_pr_lm)
 ```
 
 ```{r}
 av_pr_seg <- segmented(av_pr_lm,
                        seg.Z = ~ leaf,
-                       psi = list(leaf = c(3, 7, 10)))
+                       psi = list(leaf = c(3, 6, 10)))
 summary(av_pr_seg)
 ```
 
@@ -477,7 +477,7 @@ av_tba_mean_plot
 
 We ran a LM for leaf number and teeth:blade area.
 ```{r}
-av_tba_lm <- lm(avg.tba ~ leaf, data = av_l_means)
+av_tba_lm <- lm(teeth.blade.area ~ leaf, data = aestivalis)
 summary(av_tba_lm)
 ```
 
@@ -506,7 +506,6 @@ av_taba13_plot <- ggplot(av_13, aes(x = leaf, y = teeth.blade.area)) + geom_smoo
 av_taba13_plot <- av_taba13_plot +labs(x = "Leaf number",
                                y = "Tooth Area:Blade Area")
 av_taba13_plot
-
 ```
 
 ```{r}
@@ -518,7 +517,7 @@ av_taba13_mean_plot
 
 We ran a LM for leaf number and tooth area:blade area in 2013.
 ```{r}
-av_taba13_lm <- lm(avg.taba ~ leaf, data = av_taba13_mean)
+av_taba13_lm <- lm(tooth.area.blade.area ~ leaf, data = av_13)
 summary(av_taba13_lm)
 ```
 
@@ -533,7 +532,7 @@ summary(av_taba13_seg)
 av_taba13_seg$psi
 slope(av_taba13_seg)
 av_taba13_fitted <- fitted(av_taba13_seg)
-av_taba13_model <- data.frame(Leaf = av_taba13_mean$leaf, TABA = av_taba13_fitted)
+av_taba13_model <- data.frame(Leaf = av_13$leaf, TABA = av_taba13_fitted)
 ggplot(av_taba13_model, aes(x = Leaf, y = TABA)) + geom_line()
 av_taba13_lines <- av_taba13_seg$psi[, 2]
 av_taba13_mean_break <- av_taba13_plot + geom_vline(xintercept = av_taba13_lines, linetype = "dashed")
@@ -559,7 +558,7 @@ av_taba15_mean_plot
 
 We ran a LM for leaf number and tooth area:blade area in 2015.
 ```{r}
-av_taba15_lm <- lm(avg.taba ~ leaf, data = av_taba15_mean)
+av_taba15_lm <- lm(tooth.area.blade.area ~ leaf, data = av_15)
 summary(av_taba15_lm)
 ```
 
@@ -574,7 +573,7 @@ summary(av_taba15_seg)
 av_taba15_seg$psi
 slope(av_taba15_seg)
 av_taba15_fitted <- fitted(av_taba15_seg)
-av_taba15_model <- data.frame(Leaf = av_taba15_mean$leaf, TABA = av_taba15_fitted)
+av_taba15_model <- data.frame(Leaf = av_15$leaf, TABA = av_taba15_fitted)
 ggplot(av_taba15_model, aes(x = Leaf, y = TABA)) + geom_line()
 av_taba15_lines <- av_taba15_seg$psi[, 2]
 av_taba15_mean_break <- av_taba15_plot + geom_vline(xintercept = av_taba15_lines, linetype = "dashed")
@@ -600,7 +599,7 @@ av_tt13_mean_plot
 
 We ran a LM for leaf number and total teeth in 2013.
 ```{r}
-av_tt13_lm <- lm(avg.tt ~ leaf, data = av_tt13_mean)
+av_tt13_lm <- lm(total.teeth ~ leaf, data = av_13)
 summary(av_tt13_lm)
 ```
 
@@ -615,7 +614,7 @@ summary(av_tt13_seg)
 av_tt13_seg$psi
 slope(av_tt13_seg)
 av_tt13_fitted <- fitted(av_tt13_seg)
-av_tt13_model <- data.frame(Leaf = av_tt13_mean$leaf, TT = av_tt13_fitted)
+av_tt13_model <- data.frame(Leaf = av_13$leaf, TT = av_tt13_fitted)
 ggplot(av_tt13_model, aes(x = Leaf, y = TT)) + geom_line()
 av_tt13_lines <- av_tt13_seg$psi[, 2]
 av_tt13_mean_break <- av_tt13_plot + geom_vline(xintercept = av_tt13_lines, linetype = "dashed")
@@ -641,7 +640,7 @@ av_tt15_mean_plot
 
 We ran a LM for leaf number and tooth area:blade area in 2015.
 ```{r}
-av_tt15_lm <- lm(avg.tt ~ leaf, data = av_tt15_mean)
+av_tt15_lm <- lm(total.teeth ~ leaf, data = av_15)
 summary(av_tt15_lm)
 ```
 
@@ -656,7 +655,7 @@ summary(av_tt15_seg)
 av_tt15_seg$psi
 slope(av_tt15_seg)
 av_tt15_fitted <- fitted(av_tt15_seg)
-av_tt15_model <- data.frame(Leaf = av_tt15_mean$leaf, TT = av_tt15_fitted)
+av_tt15_model <- data.frame(Leaf = av_15$leaf, TT = av_tt15_fitted)
 ggplot(av_tt15_model, aes(x = Leaf, y = TT)) + geom_line()
 av_tt15_lines <- av_tt15_seg$psi[, 2]
 av_tt15_mean_break <- av_tt15_plot + geom_vline(xintercept = av_tt15_lines, linetype = "dashed")
@@ -670,7 +669,6 @@ av_cp13_plot <- ggplot(av_13, aes(x = leaf, y = compactness)) + geom_smooth() + 
 av_cp13_plot <- av_cp13_plot +labs(x = "Leaf number",
                                y = "Compactness")
 av_cp13_plot
-
 ```
 
 ```{r}
@@ -682,7 +680,7 @@ av_cp13_mean_plot
 
 We ran a LM for leaf number and compactness in 2013.
 ```{r}
-av_cp13_lm <- lm(avg.cp ~ leaf, data = av_cp13_mean)
+av_cp13_lm <- lm(compactness ~ leaf, data = av_13)
 summary(av_cp13_lm)
 ```
 
@@ -697,7 +695,7 @@ summary(av_cp13_seg)
 av_cp13_seg$psi
 slope(av_cp13_seg)
 av_cp13_fitted <- fitted(av_cp13_seg)
-av_cp13_model <- data.frame(Leaf = av_cp13_mean$leaf, CP = av_cp13_fitted)
+av_cp13_model <- data.frame(Leaf = av_13$leaf, CP = av_cp13_fitted)
 ggplot(av_cp13_model, aes(x = Leaf, y = CP)) + geom_line()
 av_cp13_lines <- av_cp13_seg$psi[, 2]
 av_cp13_mean_break <- av_cp13_plot + geom_vline(xintercept = av_cp13_lines, linetype = "dashed")
@@ -722,7 +720,7 @@ av_cp15_mean_plot
 
 We ran a LM for leaf number and compactness in 2015.
 ```{r}
-av_cp15_lm <- lm(avg.cp ~ leaf, data = av_cp15_mean)
+av_cp15_lm <- lm(compactness ~ leaf, data = av_15)
 summary(av_cp15_lm)
 ```
 
@@ -737,7 +735,7 @@ summary(av_cp15_seg)
 av_cp15_seg$psi
 slope(av_cp15_seg)
 av_cp15_fitted <- fitted(av_cp15_seg)
-av_cp15_model <- data.frame(Leaf = av_cp15_mean$leaf, CP = av_cp15_fitted)
+av_cp15_model <- data.frame(Leaf = av_15$leaf, CP = av_cp15_fitted)
 ggplot(av_cp15_model, aes(x = Leaf, y = CP)) + geom_line()
 av_cp15_lines <- av_cp15_seg$psi[, 2]
 av_cp15_mean_break <- av_cp15_plot + geom_vline(xintercept = av_cp15_lines, linetype = "dashed")
@@ -762,7 +760,7 @@ av_sf13_mean_plot
 
 We ran a LM for leaf number and shape factor in 2013.
 ```{r}
-av_sf13_lm <- lm(avg.sf ~ leaf, data = av_sf13_mean)
+av_sf13_lm <- lm(shape.factor ~ leaf, data = av_13)
 summary(av_sf13_lm)
 ```
 
@@ -777,7 +775,7 @@ summary(av_sf13_seg)
 av_sf13_seg$psi
 slope(av_sf13_seg)
 av_sf13_fitted <- fitted(av_sf13_seg)
-av_sf13_model <- data.frame(Leaf = av_sf13_mean$leaf, SF = av_sf13_fitted)
+av_sf13_model <- data.frame(Leaf = av_13$leaf, SF = av_sf13_fitted)
 ggplot(av_sf13_model, aes(x = Leaf, y = SF)) + geom_line()
 av_sf13_lines <- av_sf13_seg$psi[, 2]
 av_sf13_mean_break <- av_sf13_plot + geom_vline(xintercept = av_sf13_lines, linetype = "dashed")
@@ -803,7 +801,7 @@ av_sf15_mean_plot
 
 We ran a LM for leaf number and shape factor in 2015.
 ```{r}
-av_sf15_lm <- lm(avg.sf ~ leaf, data = av_sf15_mean)
+av_sf15_lm <- lm(shape.factor ~ leaf, data = av_15)
 summary(av_sf15_lm)
 ```
 
@@ -818,7 +816,7 @@ summary(av_sf15_seg)
 av_sf15_seg$psi
 slope(av_sf15_seg)
 av_sf15_fitted <- fitted(av_sf15_seg)
-av_sf15_model <- data.frame(Leaf = av_sf15_mean$leaf, SF = av_sf15_fitted)
+av_sf15_model <- data.frame(Leaf = av_15$leaf, SF = av_sf15_fitted)
 ggplot(av_sf15_model, aes(x = Leaf, y = SF)) + geom_line()
 av_sf15_lines <- av_sf15_seg$psi[, 2]
 av_sf15_mean_break <- av_sf15_plot + geom_vline(xintercept = av_sf15_lines, linetype = "dashed")
