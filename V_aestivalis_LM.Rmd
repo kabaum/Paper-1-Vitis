@@ -152,7 +152,7 @@ av_fdr_mean_plot <- av_fdr_mean_plot +labs(x = "Leaf number",
 av_fdr_mean_plot
 ```
 
-We ran a LM for leaf number and feret diamter ratio.
+We ran a LM for leaf number and feret diameter ratio.
 ```{r}
 av_fdr_lm <- lm(feret.diameter.ratio ~ leaf, data = aestivalis)
 summary(av_fdr_lm)
@@ -645,7 +645,7 @@ av_tt15_mean_plot <- av_tt15_mean_plot +labs(x = "Leaf number",
 av_tt15_mean_plot
 ```
 
-We ran a LM for leaf number and tooth area:blade area in 2015.
+We ran a LM for leaf number and total teeth in 2015.
 ```{r}
 av_tt15_lm <- lm(total.teeth ~ leaf, data = av_15)
 summary(av_tt15_lm)
